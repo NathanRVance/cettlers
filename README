@@ -6,11 +6,11 @@ Cettlers was written because linux has a lack of command line strategy games; Ce
 To install,
 $ cd /directory/with/*.c/files/
 $ make
-$ cp settlers /directory/in/your/path/
+$ cp cettlers /directory/in/your/path/
 
-To run simply execute settlers
-$ settlers
+To run simply execute cettlers
+$ cettlers
 
 Or, if you refuse to copy the executable into your path, run
-./settlers
-while in the directory containing settlers.
+./cettlers
+while in the directory containing cettlers.
