@@ -1,0 +1,16 @@
+Cettlers
+
+This game is based on the board game Settlers of Catan, a Klaus Teuber game. The user intface is entirely in ascii characters.
+Cettlers was written because linux has a lack of command line strategy games; Cettlers is intended to be the first in a line of popular board games for the linux/mac command line.
+
+To install,
+$ cd /directory/with/*.c/files/
+$ make
+$ cp settlers /directory/in/your/path/
+
+To run simply execute settlers
+$ settlers
+
+Or, if you refuse to copy the executable into your path, run
+./settlers
+while in the directory containing settlers.
