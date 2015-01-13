@@ -8,17 +8,6 @@ static void replace(char a[], char b[], int x, int y);
    or all occerences if n == 0. Note '.' is wild and
    the last . replaced will be returned. */
 char util_strreplace(char a[], char x[], char y[], int n) {
-
-//  FILE *pFile = NULL;
-//  char *filename = "./log";
-//  char *buffer = a;
-//  size_t str_length = 0;
-//  pFile = fopen(filename, "w");
-//  str_length = strlen(buffer);
-//  fwrite(&str_length, sizeof(size_t), 1, pFile);
-//  fwrite(buffer, str_length, 1, pFile);
-//  fclose(pFile);
-
  int replaceAll = ! n;
  int i, j, lengthY;
  char dot = '\0';

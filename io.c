@@ -102,6 +102,7 @@ void io_printmap()
  print(MAPROWS, MAPCOLS, map);
  print(1, DATCOLS, dat);
  io_printdat();
+ refresh();
 }
 
 void io_printhelp()
@@ -168,20 +169,20 @@ void io_printdat()
  }
 }
 
-void io_selectTrade(int *accepted, int cursor)
+#include <string.h>
+
+void io_selectTrade(int accepted[3], int cursor, int player)
 {
- int i, j, player, accepted2[3];
- for(i = 0; i < 4; i++)
-  if(accepted[i] == 2) {
-   player = i + 1;
-   for(j = 0; j < i; j++) accepted2[j] = accepted[j];
-   for(j = i+1; j < 4; j++) accepted2[j-1] = accepted[j];
-  }
+ player++;
+ char status[3][10];
+ strcpy(status[0], "Declined");
+ strcpy(status[1], "Accepted");
+ strcpy(status[2], "Counter ");
  int y = 10;
  int x = 10;
  mvprintw(y++, x, "##################################");
  mvprintw(y++, x, "# Player %d   Player %d   Player %d #", (player == 1)? 2 : 1, (player <= 2)? 3 : 2, (player <= 3)? 4 : 3);
- mvprintw(y++, x, "# %s   %s   %s #", (accepted2[0])? "Accepted" : "Declined", (accepted2[1])? "Accepted" : "Declined", (accepted2[2])? "Accepted" : "Declined");
+ mvprintw(y++, x, "# %s   %s   %s #", status[accepted[0]], status[accepted[1]], status[accepted[2]]);
  mvprintw(y++, x, "#    %c          %c          %c     #", (cursor == 0)? '*' : ' ', (cursor == 1)? '*' : ' ', (cursor == 2)? '*' : ' ');
  mvprintw(y++, x, "##################################");
 }
@@ -192,4 +193,22 @@ void io_printwin(int player, int cards)
  mvprintw(12, 10, "# Player %d Won with %d VP card%s #", player+1, cards, (cards == 1)? "! " : "s!");
  mvprintw(13, 10, "#      Press 'q' to exit.       #");
  mvprintw(14, 10, "#################################");
+}
+
+void io_printsetup(int cursor, int *set)
+{
+ clear();
+ int y = 0;
+ int x = 0;
+ mvprintw(y++, x, "###########################################");
+ mvprintw(y++, x, "#  Cettlers pre-game config               #");
+ mvprintw(y++, x, "#  %c  Player 1: %s                     #", (cursor == 0)? '*' : ' ', (set[0] == 0)? "human" : "ai   ");
+ mvprintw(y++, x, "#  %c  Player 2: %s                     #", (cursor == 1)? '*' : ' ', (set[1] == 0)? "human" : "ai   ");
+ mvprintw(y++, x, "#  %c  Player 3: %s                     #", (cursor == 2)? '*' : ' ', (set[2] == 0)? "human" : "ai   ");
+ mvprintw(y++, x, "#  %c  Player 4: %s                     #", (cursor == 3)? '*' : ' ', (set[3] == 0)? "human" : "ai   ");
+ mvprintw(y++, x, "#  %c  Map number distribution: %s  #", (cursor == 4)? '*' : ' ', (set[4] == 0)? "patterned" : "random   ");
+ mvprintw(y++, x, "#                                         #");
+ mvprintw(y++, x, "#    Use arrow keys to change settings    #");
+ mvprintw(y++, x, "#        Press enter to begin game        #");
+ mvprintw(y++, x, "###########################################");
 }

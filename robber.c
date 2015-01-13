@@ -22,6 +22,7 @@ int getupperleft(int hex);
 void marker_hide(void);
 void ai_moverobber(int player);
 
+//Returns how many hexes in the robber is
 static int getoffset(int hex)
 {
  int offset = 1;

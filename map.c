@@ -56,9 +56,9 @@ between in map logic. Refer to this diagram for reference.
 Note that hexes 0, 2, 20 and 22 are included only to keep the pattern.
 */
 
-map_create()
+map_create(int randomnums)
 {
- strcpy(map[0], "Press h for help");
+ strcpy(map[0], "Press 'h' for help");
  strcpy(map[1], "                   ~   | 2:1 |   ~   |>       ~");
  strcpy(map[2], "                       |brick|     __|__           ~");
  strcpy(map[3], "   ~           ~        ^___^     ~{___}~   ~");
@@ -117,15 +117,26 @@ map_create()
  res[5] = DESERT;
  map_distribute(n, res, 0);
 
- n[0] = n[9] = n[10] = 1;
- for(i = 1; i < 9; i++)
-  n[i] = 2;
- for(i = 0; i < 5; i++)
-  res[i] = i+2;
- for(i = 5; i < 10; i++)
-  res[i] = i+3;
- res[10] = 0;
- map_distribute(n, res, 1);
+//Distribute numbers
+ if(randomnums) {
+  n[0] = n[9] = n[10] = 1;
+  for(i = 1; i < 9; i++)
+   n[i] = 2;
+  for(i = 0; i < 5; i++)
+   res[i] = i+2;
+  for(i = 5; i < 10; i++)
+   res[i] = i+3;
+  res[10] = 0;
+  map_distribute(n, res, 1);
+ } else {
+  int nums[] = {5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11};
+  int order[] = {1, 3, 5, 10, 15, 18, 21, 19, 17, 12, 7, 4, 6, 8, 13, 16, 14, 9, 11};
+  int desert;
+  for(desert = 0; map_getdat(desert, 0) != 5; desert++);
+  for(i = 0, j = 0; i < 19; i++) {
+   if(order[i] != desert) map_setdat(order[i], 1, nums[j++]);
+  }
+ }
 
 //unset robber for all (will be fixed when we fix the desert)
 for(i = 0; i < 23; i++)

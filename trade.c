@@ -13,6 +13,7 @@ int data_addresource(int p, int res, int num);
 void data_refresh(int p);
 void map_setmessage(char *s);
 void devcards_domonopoly(int player, int res);
+int player_trade(int player, int* tr);
 
 //static int t[6]; //The 5 resources and trade type
 static int tCursor; //The selected resource
@@ -115,35 +116,11 @@ void trade_change(int change, int player)
      devcards_domonopoly(player, tCursor);
      break;
    case 5: //incoming trade
-     trade_change_enact(change, player);
+     if(change == 1 || data_getresource(player, tCursor) > 0)
+      trade_change_enact(change, player);
      break;
    default:
      break;
-  }
- }
-}
-
-void io_selectTrade(int *accepted, int cursor);
-
-int selectTrade(int *accepted, int player)
-{
- int cursor = 0;
- while(1) {
-  io_selectTrade(accepted, cursor);
-  switch(io_getkey()) {
-   case LEFT: cursor = (cursor+2)%3;
-    break;
-   case RIGHT: cursor = (cursor+1)%3;
-    break;
-   case ENTER:
-   case 't':
-    if(cursor >= player) cursor++;
-    return cursor;
-    break;
-   case 'c':
-    return -1;
-   default:
-    break;
   }
  }
 }
@@ -154,15 +131,8 @@ int perform_trade(int player)
  if(tType == 0) {
   int tr[5];
   for(i = 0; i < 5; i++) tr[i] = trade[i] * -1;
-  int accepted[4];
-  accepted[player] = 2;
-  for(i = 1; i < 4; i++)
-   accepted[(player+i)%4] = accepttrade(tr, (player+i)%4, player);
-  int selected = selectTrade(accepted, player);
-  if(selected > -1 && accepted[selected] == 1)
-   doTrade(tr, player, selected);
-  else map_setmessage("Trade cancelled");
-  return 1;
+  trade_down(player);
+  return player_trade(player, tr);
  }
  if(tCredits == 0) {
   for(i = 0; i < 5; i++)
@@ -218,9 +188,9 @@ int* trade_routine(int player, int credits, int type, int *start)
    if(type == 4)
     devcards_domonopoly(player, tCursor);
    if(type == 5) {
-    trade_down(player);
     int i;
     for(i = 0; i < 5; i++) ret[i] = trade[i];
+    trade_down(player);
     return ret;
    }
    if(type == 4 || perform_trade(player)) {

@@ -8,10 +8,26 @@ int road_build(int player, int pregame);
 int map_getdat(int index, int pos);
 int data_onhex(int p, int hex);
 
-void ai_buildpregame(int player, int pos)
+int* ai_surroundinghexes(int vert)
 {
- marker_setposition(pos);
- builder_placesettlement(pos, player, 1);
+ static int ret[3];
+ int vnum = vert % 12;
+ 
+ //find the hex above
+ if(vnum < 6) ret[0] = vnum / 2 - 5 + 5 * (vert / 12); 
+ else if (vnum > 6 && vnum < 11) ret[0] = (vnum-1) / 2 - 5 + 5 * (vert / 12);
+ else ret[0] = -100;
+ 
+ //hex below
+ if(ret[0] != -100) ret[1] = ret[0] + 5;
+ else ret[1] = -100;
+ 
+ //hex to the side
+ if(vnum < 5 && vnum > 0) ret[2] = (vnum-1) / 2 - 2 + 5 * (vert / 12);
+ else if (vnum > 5) ret[2] = vnum / 2 - 3 + 5 * (vert / 12);
+ else ret[2] = -100;
+ 
+ return ret;
 }
 
 void ai_randomroad(int player, int pos, int pregame)
@@ -58,6 +74,37 @@ int* ai_rateres(int player)
   res[i] = 5 - weight[i] * 4 / max;
  }
  return res;
+}
+
+//Weighs a hex based on its resource and number
+int ai_weight(int player, int hex)
+{
+ int num = map_getdat(hex, 1);
+ if(num == 0) return 0;
+ if(num > 7) num = num * -1 + 14;
+ if(num > 0) num--;
+ num += ai_rateres(player)[map_getdat(hex, 0)];
+ return num;
+}
+
+//weighs the vert based on surrounding hexes
+int ai_vertweight(int player, int vert)
+{
+ if(! map_islegalvert(vert)) return 0;
+ int *hexes = ai_surroundinghexes(vert);
+ int weight = 0;
+ int i;
+ for(i = 0; i < 3; i++) {
+  if(hexes[i] > 0 && hexes[i] < 22 && hexes[i] != 2 && hexes[i] != 20)
+   weight += ai_weight(player, hexes[i]);
+ }
+ int port = data_getport(vert);
+ if(port == -1) return weight;
+ if(port == 5 && ! data_hasanyport(player)) weight += 5;
+ else {
+  weight += ai_rateres(player)[port] * -1 + 5;
+ }
+ return weight;
 }
 
 int map_getrowvert(int vert);

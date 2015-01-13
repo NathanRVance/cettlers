@@ -4,16 +4,12 @@ char util_strreplace(char a[], char x[], char y[], int n);
 int map_islegalvert(int pos);
 int map_getrowmapvert(int vert);
 int map_getcolmapvert(int vert);
-void map_setmessage(char *s);
 static int marker_left(int pos);
 static int marker_right(int pos);
 static int marker_up(int pos);
 static int marker_down(int pos);
 void marker_erase(int pos);
 void marker_place(int pos);
-char* cat(char a[], char b[]);
-char* itoa(int i);
-int ai_vertweight(int vert);
 
 static int position;
 static char buffer;

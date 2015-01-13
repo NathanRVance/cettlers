@@ -1,6 +1,7 @@
 #include "color.h"
 #include "settlers.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 void io_printmap(void);
 int io_getkey(void);
@@ -24,19 +25,19 @@ void roll(int player);
 void devcards_routine(int player);
 void ai_pregame(int player);
 void data_pregameres(int p, int vert);
-void data_setai(int p, int set);
 int data_isai(int p);
 void ai_routine(int player);
+int setup_routine(void);
+void map_create(int randomnums);
+char* cat(char a[], char b[]);
+char* itoa(int i);
 
 main()
 {
  data_init();
- int i;
- for(i = 1; i < 4; i++)
-  data_setai(i, 1);
  trade_down(0);
  io_init();
- map_create();
+ map_create(setup_routine());
  devcards_init();
  io_printmap();
  pregame_routine();
@@ -64,14 +65,17 @@ void pregame(int player, int res)
 {
  int c;
  int go = 1;
+ map_setmessage(cat(cat("Player ", itoa(player+1)), " pregame, please build a settlement."));
+ if(data_isai(player)) {
+  ai_pregame(player);
+  data_refresh(player);
+  io_printmap();
+  sleep(1);
+  go = 0;
+ }
  while(go) {
   data_refresh(player);
   io_printmap();
-  if(data_isai(player)) {
-   ai_pregame(player);
-   go = 0;
-   continue;
-  }
   switch(c = io_getkey()) {
    case LEFT:
    case RIGHT:
@@ -131,7 +135,7 @@ void main_routine()
    case UP:
    case DOWN: marker_move(c);
     break;
-   case 'a': ai_routine(player);
+//   case 'a': ai_routine(player);
    case 'p': player = (player+1)%4;
              roll(player);
     break;
@@ -153,7 +157,7 @@ void main_routine()
     break;
    case 'q': quit();
     break;
-   default: map_setmessage("Undefined key.");
+   default: map_setmessage("Undefined key, press 'h' for help");
     break;
   }
  }

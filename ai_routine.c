@@ -1,7 +1,7 @@
 #include "settlers.h"
+#include <unistd.h>
 
 int data_getresource(int p, int res);
-int data_totresources(int p);
 int builder_placesettlement(int pos, int player, int isPregame);
 int builder_placecity(int pos, int player);
 void devcards_buy(int player);
@@ -9,17 +9,14 @@ int devcards_remaining(void);
 int data_elementsplaced(int p, int item);
 int* data_getsettlements(int p);
 int ai_vertweight(int player, int vert);
-int* data_getsettlements(int p);
 void marker_setposition(int pos);
 int data_poslegal(int pos);
 int data_atvertex(int player, int position);
 int* ai_surroundingverts(int vert);
-int data_playeratvertex(int vertex);
 int road_freeedge(int pos1, int pos2);
 int data_getcards(int p, int card);
 void data_addcards(int p, int card, int num);
 int map_getrobberhex(void);
-void robber_routine(int player);
 int ai_trade(int player);
 int* ai_rateres(int player);
 void map_setmessage(char s[]);
@@ -231,6 +228,7 @@ void ai_routine(int player)
  int didsomething = 1;
  ai_playcard(player);
  while(didsomething) {
+  sleep(1);
   if(ai_settle(player) || ai_city(player) || ai_road(player, 0))
    didsomething = 1;
   else

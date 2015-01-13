@@ -6,8 +6,9 @@ int* ai_rateres(int player);
 int data_getresource(int p, int res);
 int get_trade(int p, int res);
 void data_addresource(int p, int card, int num);
-int data_isai(int p);
-int* trade_routine(int player, int credits, int type);
+void doTrade(int *trade, int player1, int player2);
+int* accepttrade(int *trade, int player, int playerTrading);
+int data_vps(int p);
 
 int rate_hand(int *hand, int player)
 {
@@ -47,38 +48,18 @@ int* gethand(int player)
  return hand;
 }
 
-//+|- in trade[] is from the point of view of player2
-void doTrade(int *trade, int player1, int player2)
+int ai_accepttrade(int *trade, int player)
 {
+ if(data_vps(player) >= 7) return 0;
+ int *hand = gethand(player);
+ int rating = rate_hand(hand, player);
  int i;
- for(i = 0; i < 5; i++) {
-  data_addresource(player1, i, trade[i] * -1);
-  data_addresource(player2, i, trade[i]);
- }
-}
-
-int accepttrade(int *trade, int player, int playerTrading)
-{
- if(data_isai(player)) {
-  int *hand = gethand(player);
-  int rating = rate_hand(hand, player);
-  int i;
-  for(i = 0; i < 5; i++)
-   hand[i] += trade[i];
-  if(rate_hand(hand, player) > rating)
-   return 1;
- } else {
-  int *trade2 = trade_routine(player, 0, 5);
-  int i;
-  int accept = 1;
-  for(i = 0; i < 5; i++)
-   if(trade[i] != trade2[i]) accept = 0;
-  if(accept) return 1;
-  if(accepttrade(trade2, playerTrading, player)) {
-   doTrade(trade2, player, playerTrading);
-  }
- }
- return 0;
+ for(i = 0; i < 5; i++)
+  hand[i] += trade[i];
+if(rate_hand(hand, player) > rating)
+  return 1;
+ else
+  return 0;
 }
 
 int ai_trade(int player)
@@ -108,7 +89,7 @@ int ai_trade(int player)
    }
   }
   if(max) {
-   data_addresource(player, maxi, get_trade(player, i) * -1);
+   data_addresource(player, maxi, get_trade(player, maxi) * -1);
    data_addresource(player, maxj, 1);
    traded = 1;
   } else break;
@@ -129,7 +110,7 @@ int ai_trade(int player)
       trade[j] = -1;
       trade[i] = k;
       for(p = 1; p < 4; p++) {
-       if(accepttrade(trade, (player+p)%4, player)) {
+       if(accepttrade(trade, (player+p)%4, player)[5] == 1) {
         doTrade(trade, player, (player+p)%4);
         traded = 1;
         break;
