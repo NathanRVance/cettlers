@@ -207,13 +207,13 @@ int getupperleft(int hex)
 void roll(int player)
 {
  int roll = rand() % 6 + rand() % 6 + 2;
+ ROLLED = roll;
  if(roll == 7) {
   robber_discard(player);
   map_setmessage(cat(cat("Player ", itoa(player+1)), ", please move the robber."));
   io_printmap(! data_isai(player));
   robber_routine(player);
  }
- map_setmessage(cat("Rolled ", itoa(roll)));
  int i, p;
  for(i = 1; i <= 21; i++)
   if(map_getdat(i, 1) == roll && map_getdat(i, 2) != 1) //is not robber
@@ -385,10 +385,7 @@ void data_refresh(int p)
  int i;
  //dat[1] holds numbers of resources for the player
  for(i = 0; i < 5; i++)
-  if(! data_isai(p))
-   dat[1][i] = player[p][RESOURCES][i];
-  else
-   dat[1][i] = 0;
+  dat[1][i] = player[p][RESOURCES][i];
  //dat[2] holds data that is seen by all players
  for(i = 0; i < 4; i++) {
   dat[2][7*i] = data_totresources(i);

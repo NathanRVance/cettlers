@@ -38,3 +38,4 @@ char cardDisplay[CARDROWS][100];
 #define YEAROPLENTY 3 //2
 #define VP          4 //5
 
+int ROLLED;

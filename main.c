@@ -34,6 +34,7 @@ char* itoa(int i);
 
 main()
 {
+ ROLLED = 0;
  data_init();
  trade_down(0);
  io_init();

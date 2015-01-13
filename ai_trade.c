@@ -57,6 +57,32 @@ if(rate_hand(hand, player) > rating)
   return 0;
 }
 
+int ai_playertrade(int player, int *trade, int minRating)
+{
+ static int trades[4][6];
+ int p, i;
+ for(i = 0; i < 6; i++) trades[player][i] = 0;
+ for(p = 1; p < 4; p++) {
+  int *t = accepttrade(trade, (player+p)%4, player);
+  for(i = 0; i < 6; i++) trades[(player+p)%4][i] = t[i];
+ }
+ int max, maxp, *hand;
+ max = minRating;
+ maxp = player;
+ for(p = 1; p < 4; p++) {
+  if(trades[(player+p)%4][5] > 0) {
+   hand = gethand(player);
+   for(i = 0; i < 5; i++) hand[i] -= trades[(player+p)%4][i];
+   if(rate_hand(hand, player) > max) {
+    max = rate_hand(hand, player);
+    maxp = (player+p)%4;
+   }
+  }
+ }
+ doTrade(trades[maxp], maxp, player);
+ return (maxp != player);
+}
+
 int ai_trade(int player)
 {
  int *hand;
@@ -86,7 +112,7 @@ int ai_trade(int player)
   if(max) {
    data_addresource(player, maxi, get_trade(player, maxi) * -1);
    data_addresource(player, maxj, 1);
-   traded = 1;
+   traded += 1;
   } else break;
  }
  if(traded) return 1;
@@ -105,12 +131,7 @@ int ai_trade(int player)
      if(n > rating + 5) {//5 chosen arbitrarily
       trade[j] = -1;
       trade[i] = k;
-      for(p = 1; p < 4; p++) {
-       if(accepttrade(trade, (player+p)%4, player)[5] == 1) {
-        doTrade(trade, player, (player+p)%4);
-        return 1;
-       }
-      }
+      traded += ai_playertrade(player, trade, rating);
       trade[i] = trade[j] = 0;
      }
      hand = gethand(player);

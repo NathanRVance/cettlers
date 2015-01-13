@@ -14,8 +14,8 @@ void doTrade(int *trade, int player1, int player2)
 {
  int i;
  for(i = 0; i < 5; i++) {
-  data_addresource(player1, i, trade[i] * -1);
   data_addresource(player2, i, trade[i]);
+  data_addresource(player1, i, trade[i] * -1);
  }
 }
 
@@ -34,8 +34,9 @@ int selectTrade(int accepted[4][6], int player)
  int cursor = 0;
  int i, j, accepted2[3];
  for(i = 0; i < 4; i++)
-  for(j = 0; j < 5; j++)
+  for(j = 0; j < 5; j++) {
    accepted[i][j] *= -1;
+   }
  for(i = 0; i < 4; i++)
   if(accepted[i][5] == 3) {
    for(j = 0; j < i; j++) accepted2[j] = accepted[j][5];
@@ -87,19 +88,19 @@ int* accepttrade(int *tr, int player, int playerTrading)
    return ret;
   }
  } else {
-  map_setmessage(cat(cat("Player ", itoa(playerTrading+1)), " has offered a trade"));
   for(i = 0; i < 5; i++)
    if(data_getresource(player, i) + tr[i] < 0) {
     ret[5] = 0;
     return ret;
    }
+  map_setmessage(cat(cat("Player ", itoa(playerTrading+1)), " has offered a trade"));
   int *tr2 = trade_routine(player, 0, 5, tr);
   for(i = 0; i < 5; i++) ret[i] = tr2[i];
   int accept = 1;
   for(i = 0; i < 5; i++)
    if(tr[i] != tr2[i]) accept = 0;
   for(i = 0; i < 5; i++)
-   if(data_getresource(player, i) + ret[i] < 0) {
+   if(data_getresource(playerTrading, i) - ret[i] < 0) {
     ret[5] = 0;
     return ret;
    }

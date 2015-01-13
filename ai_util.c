@@ -91,7 +91,7 @@ int ai_vertweight(int player, int vert)
  }
  int port = data_getport(vert);
  if(port == -1) return weight;
- if(port == 5 && ! data_hasanyport(player)) weight += 5;
+ if(port == 5 && ! data_hasanyport(player)) weight += 4;
  else {
   weight += ai_rateres(player)[port] * -1 + 5;
  }

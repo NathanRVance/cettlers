@@ -4,6 +4,7 @@
 #include "color.h"
 
 void io_printdat(int printsdat);
+void io_printrolled(void);
 
 int io_getkey()
 {
@@ -102,6 +103,7 @@ void io_printmap(int printsdat)
  print(MAPROWS, MAPCOLS, map);
  print(1, DATCOLS, dat);
  io_printdat(printsdat);
+ io_printrolled();
  refresh();
 }
 
@@ -212,4 +214,9 @@ void io_printsetup(int cursor, int *set)
  mvprintw(y++, x, "#    Use arrow keys to change settings    #");
  mvprintw(y++, x, "#        Press enter to begin game        #");
  mvprintw(y++, x, "###########################################");
+}
+
+void io_printrolled(void)
+{
+ if(ROLLED) mvprintw(1, 0, "Rolled %d", ROLLED);
 }
