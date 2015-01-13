@@ -4,6 +4,27 @@
 
 static void replace(char a[], char b[], int x, int y);
 
+#define POOLSIZE 10000
+static int ipool[POOLSIZE];
+static int *ipoolp = ipool;
+int* get_intarray(int size)
+{
+ if(ipoolp + size > ipool + POOLSIZE) ipoolp = ipool;
+ int* ret = ipoolp;
+ ipoolp += size;
+ return ret;
+}
+
+static char cpool[POOLSIZE];
+static char *cpoolp = cpool;
+char* get_chararray(int size)
+{
+ if(cpoolp + size > cpool + POOLSIZE) cpoolp = cpool;
+ char* ret = cpoolp;
+ cpoolp += size;
+ return ret;
+}
+
 /* In string a[], replace nth occerence of x[] with y[],
    or all occerences if n == 0. Note '.' is wild and
    the last . replaced will be returned. */
@@ -46,30 +67,27 @@ static void replace(char a[], char b[], int x, int y)
  for(i = i, j = 0; (a[i] = save[j]) != '\0'; i++, j++);
 }
 
-#define RET 500
-static char ret[RET];
-static int retindex;
 /* Concatinates a and b and returns a different
    string. Only use when returned string can be recycled. */
 char* cat(char a[], char b[]) {
- int j;
- j = 0;
  int len = strlen(a) + strlen(b) + 1;
- if(len > RET) return "error";
+/* if(len > RET) return "error";
  if(len + retindex > RET) retindex = 0;
  char* p = ret + retindex;
- while((ret[retindex++] = a[j++]) != '\0');
- retindex--;
+*/
+ char *p = get_chararray(len);
+ int i, j;
+ i = j = 0;
+ while((p[i++] = a[j++]) != '\0');
+ i--;
  j = 0;
- while((ret[retindex++] = b[j++]) != '\0');
+ while((p[i++] = b[j++]) != '\0');
  return p;
 }
 
 char* itoa(int i)
 {
- if(retindex + 5 >= RET) retindex = 0;
- char *num = &ret[retindex];
- retindex += 5;
+ char *num = get_chararray(5);
  int j;
  for(j = 0; j < 5; num[j++] = ' ');
  num[3] = '0';

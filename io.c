@@ -3,7 +3,7 @@
 #include "settlers.h"
 #include "color.h"
 
-void io_printdat(void);
+void io_printdat(int printsdat);
 
 int io_getkey()
 {
@@ -96,12 +96,12 @@ static void print(int rows, int cols, char m[rows][cols])
   }
 }
 
-void io_printmap()
+void io_printmap(int printsdat)
 {
  clear();
  print(MAPROWS, MAPCOLS, map);
  print(1, DATCOLS, dat);
- io_printdat();
+ io_printdat(printsdat);
  refresh();
 }
 
@@ -144,9 +144,10 @@ void io_printtrade()
  mvprintw(27, 0, "          %3d %c  %3d %c   %3d %c   %3d %c   %3d %c   %s %c", trade[0], (trade[5] == 0)? '*' : ' ', trade[1], (trade[5] == 1)? '*' : ' ', trade[2], (trade[5] == 2)? '*' : ' ', trade[3], (trade[5] == 3)? '*' : ' ', trade[4], (trade[5] == 4)? '*' : ' ', &trade[6], (trade[5] == 5)? '*' : ' ');
 }
 
-void io_printdat()
+void io_printdat(int printsdat)
 {
- printw("          %3d    %3d     %3d     %3d     %3d\n", dat[1][0], dat[1][1], dat[1][2], dat[1][3], dat[1][4]);
+ if(printsdat)
+  printw("          %3d    %3d     %3d     %3d     %3d\n", dat[1][0], dat[1][1], dat[1][2], dat[1][3], dat[1][4]);
  int y = 1;
  int x = 54;
  int i;

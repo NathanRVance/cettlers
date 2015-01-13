@@ -6,6 +6,8 @@ int data_getresource(int p, int res);
 int data_isai(int p);
 int* trade_routine(int player, int credits, int type, int *start);
 void io_selectTrade(int accepted[3], int cursor, int player);
+void map_setmessage(char s[]);
+int* get_intarray(int size);
 
 //+|- in trade[] is from the point of view of player2
 void doTrade(int *trade, int player1, int player2)
@@ -24,6 +26,8 @@ void trade_refresh(void);
 void io_printmap(void);
 void io_printtrade(void);
 void trade_down(int player);
+char* cat(char a[], char b[]);
+char* itoa(int i);
 
 int selectTrade(int accepted[4][6], int player)
 {
@@ -72,16 +76,10 @@ int selectTrade(int accepted[4][6], int player)
  }
 }
 
-#define RETSIZE 100
-static int retpool[RETSIZE];
-static int *retp = retpool;
-
 int* accepttrade(int *tr, int player, int playerTrading)
 {
- int *ret = retp;
+ int *ret = get_intarray(6);
  int i;
- retp += 6;
- if(retp >= retpool + RETSIZE) retp = retpool;
  if(data_isai(player)) {
   if(ai_accepttrade(tr, player)) {
    ret[5] = 1;
@@ -89,6 +87,7 @@ int* accepttrade(int *tr, int player, int playerTrading)
    return ret;
   }
  } else {
+  map_setmessage(cat(cat("Player ", itoa(playerTrading+1)), " has offered a trade"));
   for(i = 0; i < 5; i++)
    if(data_getresource(player, i) + tr[i] < 0) {
     ret[5] = 0;

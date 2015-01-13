@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void io_printmap(void);
+void io_printmap(int printsdat);
 int io_getkey(void);
 void io_init(void);
 void io_printhelp(void);
@@ -39,7 +39,7 @@ main()
  io_init();
  map_create(setup_routine());
  devcards_init();
- io_printmap();
+ io_printmap(0);
  pregame_routine();
  roll(0);
  main_routine();
@@ -54,7 +54,7 @@ void halt()
 void quit()
 {
  map_setmessage("Are you sure you want to quit? (y/n)");
- io_printmap();
+ io_printmap(1);
  if(io_getkey() == 'y') {
   halt();
  }
@@ -69,19 +69,20 @@ void pregame(int player, int res)
  if(data_isai(player)) {
   ai_pregame(player);
   data_refresh(player);
-  io_printmap();
+  io_printmap(0);
   sleep(1);
   go = 0;
  }
  while(go) {
   data_refresh(player);
-  io_printmap();
+  io_printmap(0);
   switch(c = io_getkey()) {
    case LEFT:
    case RIGHT:
    case UP:
    case DOWN: marker_move(c);
     break;
+   case ENTER:
    case 'b':
     marker_show();
     if(! build_routine(player, 1)) break;
@@ -119,7 +120,7 @@ void main_routine()
  int player = 0;
  while(1) {
   data_refresh(player);
-  io_printmap();
+  io_printmap(! data_isai(player));
   map_setmessage("");
   if(data_isai(player)) {
    ai_routine(player);
@@ -141,8 +142,6 @@ void main_routine()
     break;
    case 'b': marker_show();
              build_routine(player, 0);
-    break;
-   case 'x': data_cheat(player);
     break;
    case 'c': devcards_routine(player);
     break;

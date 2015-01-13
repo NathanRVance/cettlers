@@ -22,6 +22,8 @@ int* ai_rateres(int player);
 void map_setmessage(char s[]);
 void devcards_knight(int player);
 char* cat(char a[], char b[]);
+char* itoa(int i);
+void io_printmap(int printsdat);
 
 int ai_shouldsettle(int player, int vert)
 {
@@ -50,6 +52,7 @@ int ai_settle(int player)
   int vert = ai_cansettle(player);
   if(vert != 0) {
    marker_setposition(vert);
+   map_setmessage(cat(cat("Player ", itoa(player+1)), " built a settlement"));
    return builder_placesettlement(vert, player, 0);
   }
  }
@@ -78,6 +81,7 @@ int ai_city(int player)
  }
  marker_setposition(vert);
  builder_placecity(vert, player);
+ map_setmessage(cat(cat("Player ", itoa(player+1)), " built a city"));
  return 1;
 }
 
@@ -87,6 +91,7 @@ int ai_card(int player)
   return 0;
  }
  devcards_buy(player);
+ map_setmessage(cat(cat("Player ", itoa(player+1)), " purchased a dev card"));
  return 1;
 }
 
@@ -228,6 +233,7 @@ void ai_routine(int player)
  int didsomething = 1;
  ai_playcard(player);
  while(didsomething) {
+  io_printmap(0);
   sleep(1);
   if(ai_settle(player) || ai_city(player) || ai_road(player, 0))
    didsomething = 1;

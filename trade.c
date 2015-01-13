@@ -5,7 +5,7 @@ char* itoa(int i);
 char* cat(char a[], char b[]);
 char util_strreplace(char a[], char x[], char y[], int n);
 int io_getkey(void);
-void io_printmap(void);
+void io_printmap(int printsdat);
 void io_printtrade(void);
 int get_trade(int p, int res);
 int data_getresource(int p, int res);
@@ -61,6 +61,7 @@ void trade_refresh()
 void trade_up(int credits, int type)
 {
  tType = type;
+ tCursor = -1;
  int i;
  for(i = 0; i < 6; i++)
   trade[i] = 0;
@@ -151,6 +152,7 @@ void setup(int *start, int player)
 {
  for(tCursor = 0; tCursor < 5; tCursor++)
   trade_change_enact(start[tCursor], player);
+ tCursor = -1;
 }
 
 /*
@@ -172,7 +174,7 @@ int* trade_routine(int player, int credits, int type, int *start)
  while(trading) {
   data_refresh(player);
   trade_refresh();
-  io_printmap();
+  io_printmap(1);
   io_printtrade();
   switch(io_getkey()) {
    case LEFT: tCursor_move(-1);

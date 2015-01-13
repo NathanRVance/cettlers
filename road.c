@@ -13,10 +13,11 @@ void map_setmessage(char s[]);
 void data_addresource(int p, int res, int num);
 void data_road(int p, int pos1, int pos2);
 int io_getkey();
-void io_printmap();
+void io_printmap(int printsdat);
 int data_elementsremaining(int p, int item);
 int* data_getroad(int player, int road);
 int* ai_surroundingverts(int vert);
+int data_isai(int player);
 
 static int pos2 = 0;
 
@@ -184,7 +185,7 @@ int road_routine(int player, int pregame)
   }
  }
  while(build) {
-  io_printmap();
+  io_printmap(! data_isai(player));
   switch(io_getkey()) {
    case UP: road_prospect(player, 0);
     break;
@@ -207,4 +208,17 @@ int road_routine(int player, int pregame)
     break;
   }
  }
+}
+
+int road_vertbuild(int player, int origin, int dest, int pregame)
+{
+ marker_setposition(origin);
+ int dir;
+ if(dest == origin-1) dir = 2; //left
+ else if(dest == origin+1) dir = 3; //right
+ else if(dest < origin) dir = 0; //up
+ else if(dest > origin) dir = 1; //down
+ int ret = road_prospect(player, dir);
+ if(ret) road_build(player, pregame);
+ return ret;
 }

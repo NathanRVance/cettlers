@@ -9,18 +9,19 @@ void data_addresource(int p, int card, int num);
 void doTrade(int *trade, int player1, int player2);
 int* accepttrade(int *trade, int player, int playerTrading);
 int data_vps(int p);
+int* get_intarray(int size);
 
 int rate_hand(int *hand, int player)
 {
  int sum = 0;
  if(hand[WHEAT] >= 2 && hand[STONE] >= 3 && ai_canupgrade(player))
-  sum += 5;
+  sum += 10;
  if(hand[WOOD] && hand[WHEAT] && hand[SHEEP] && hand[BRICK] && ai_cansettle(player))
-  sum += 4;
+  sum += 9;
  else if(hand[WOOD] && hand[BRICK] && ai_canroad(player, 0)[0] > 0)
-  sum += 3;
+  sum += 8;
  if(hand[WHEAT] && hand[SHEEP] && hand[STONE])
-  sum += 2;
+  sum += 7;
  int i;
  int diversity = 0;
  int *rates = ai_rateres(player);
@@ -33,15 +34,9 @@ int rate_hand(int *hand, int player)
  return sum;
 }
 
-#define POOLSIZE 10000
-static int handpool[POOLSIZE];
-static int *poolp = handpool;
-
 int* gethand(int player)
 {
- int *hand = poolp;
- poolp += 5;
- if(poolp >= handpool + POOLSIZE) poolp = handpool;
+ int *hand = get_intarray(5);
  int i;
  for(i = 0; i < 5; i++)
   *(hand+i) = data_getresource(player, i);
@@ -94,26 +89,26 @@ int ai_trade(int player)
    traded = 1;
   } else break;
  }
+ if(traded) return 1;
  //Now player trades
  int k, p, trade[5];
  for(i = 0; i < 5; i++) trade[i] = 0;
  hand = gethand(player);
  rating = rate_hand(hand, player);
- for(k = 1; i <= 2; k++) {
+ for(k = 1; k <= 2; k++) {
   for(i = 0; i < 5; i++) {
    if(hand[i] >= k) {
     hand[i] -= k;
     for(j = 0; j < 5; j++) {
      hand[j]++;
      n = rate_hand(hand, player);
-     if(n > rating + 3) {//3 chosen arbitrarily
+     if(n > rating + 5) {//5 chosen arbitrarily
       trade[j] = -1;
       trade[i] = k;
       for(p = 1; p < 4; p++) {
        if(accepttrade(trade, (player+p)%4, player)[5] == 1) {
         doTrade(trade, player, (player+p)%4);
-        traded = 1;
-        break;
+        return 1;
        }
       }
       trade[i] = trade[j] = 0;
@@ -124,6 +119,5 @@ int ai_trade(int player)
    }
   }
  }
-
  return traded;
 }

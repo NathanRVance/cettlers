@@ -1,7 +1,9 @@
 #include "settlers.h"
 
 int data_poslegal(int pos);
-void ai_randomroad(int player, int pos, int pregame);
+int road_vertbuild(int player, int origin, int dest, int pregame);
+//returns destination vertex
+int* ai_roadfromvert(int player, int vert);
 
 int ai_bestvert(int player)
 {
@@ -25,5 +27,5 @@ void ai_pregame(int player)
 {
  int vert = ai_bestvert(player);
  ai_buildpregame(player, vert);
- ai_randomroad(player, vert, 1);
+ road_vertbuild(player, vert, ai_roadfromvert(player, vert)[0], 1);
 }

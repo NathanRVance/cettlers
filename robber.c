@@ -9,7 +9,7 @@ int map_getdat(int index, int pos);
 void map_setdat(int index, int pos, int value);
 int map_getrobberhex(void);
 int io_getkey();
-void io_printmap();
+void io_printmap(int printsdat);
 void map_setmessage(char s[]);
 char* itoa(int i);
 int data_totresources(int p);
@@ -133,7 +133,7 @@ void robber_stealroutine(int player, int hex)
   map_setmessage("Please select a victim to steal from");
   int rob = 1;
   while(rob) {
-   io_printmap();
+   io_printmap(1);
    switch(io_getkey()) {
     case UP: marker_setposition(vert = verts[0]);
      break;
@@ -169,7 +169,7 @@ void robber_routine(int player)
  int rob = 1;
  while(rob) {
   data_refresh(player);
-  io_printmap();
+  io_printmap(1);
   switch(io_getkey()) {
    case UP: hex = robber_up(hex);
     break;

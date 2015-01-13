@@ -10,7 +10,7 @@ void map_setmessage(char s[]);
 void robber_discard(int player);
 int roadlength_main(int roads[], int player);
 int io_getkey(void);
-void io_printmap(void);
+void io_printmap(int printsdat);
 void io_printwin(int player, int cards);
 void halt(void);
 int* ai_surroundinghexes(int vert);
@@ -210,7 +210,7 @@ void roll(int player)
  if(roll == 7) {
   robber_discard(player);
   map_setmessage(cat(cat("Player ", itoa(player+1)), ", please move the robber."));
-  io_printmap();
+  io_printmap(! data_isai(player));
   robber_routine(player);
  }
  map_setmessage(cat("Rolled ", itoa(roll)));
@@ -248,13 +248,6 @@ void data_pregameres(int p, int vert)
    player[p][RESOURCES][map_getdat(hexes[i], 0)]++;
   }
  }
-}
-
-void data_cheat(int p)
-{
- int i;
- for(i = 0; i < 5; i++)
-  player[p][RESOURCES][i] += 4;
 }
 
 //Checks for anything within one vertex
@@ -392,7 +385,10 @@ void data_refresh(int p)
  int i;
  //dat[1] holds numbers of resources for the player
  for(i = 0; i < 5; i++)
-  dat[1][i] = player[p][RESOURCES][i];
+  if(! data_isai(p))
+   dat[1][i] = player[p][RESOURCES][i];
+  else
+   dat[1][i] = 0;
  //dat[2] holds data that is seen by all players
  for(i = 0; i < 4; i++) {
   dat[2][7*i] = data_totresources(i);
@@ -403,7 +399,7 @@ void data_refresh(int p)
   dat[2][7*i+5] = player[i][MISC][ROADLENGTH];
   dat[2][7*i+6] = data_vps(i);
   if(data_vps(i) + data_getcards(i, VP) >= 10) {
-   io_printmap();
+   io_printmap(0);
    io_printwin(i, data_getcards(i, VP));
    while(io_getkey() != 'q');
    endwin();

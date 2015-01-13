@@ -7,6 +7,10 @@ int road_prospect(int player, int dir);
 int road_build(int player, int pregame);
 int map_getdat(int index, int pos);
 int data_onhex(int p, int hex);
+int* ai_surroundingverts(int vert);
+int ai_vertweight(int player, int vert);
+int data_poslegal(int pos);
+int* get_intarray(int size);
 
 int* ai_surroundinghexes(int vert)
 {
@@ -28,19 +32,6 @@ int* ai_surroundinghexes(int vert)
  else ret[2] = -100;
  
  return ret;
-}
-
-void ai_randomroad(int player, int pos, int pregame)
-{
- marker_setposition(pos);
- int legal[3];
- int legalp = 0;
- int i;
- for(i = 0; i < 4; i++)
-  if(road_prospect(player, i))
-   legal[legalp++] = i;
- road_prospect(player, legal[rand() % legalp]);
- road_build(player, pregame);
 }
 
 int abs(int i)
@@ -110,15 +101,9 @@ int ai_vertweight(int player, int vert)
 int map_getrowvert(int vert);
 int map_getcolvert(int vert);
 
-#define SURS 1000
-static int surrounding[SURS];
-static int *surp = surrounding;
-
 int* ai_surroundingverts(int vert)
 {
- int *sur = surp;
- surp += 3;
- if(surp > surrounding + SURS) surp = surrounding;
+ int *sur = get_intarray(3);
  sur[0] = sur[1] = sur[2] = 0;
  if(map_getrowvert(vert) % 2 == map_getcolvert(vert) % 2) {
   if((vert-11)%12 != 0) {
@@ -131,4 +116,32 @@ int* ai_surroundingverts(int vert)
  sur[1] = vert + 6;
  sur[2] = vert - 6;
  return sur;
+}
+
+//returns destination vertex
+int* ai_roadfromvert(int player, int vert)
+{
+ int i, j, weight;
+ int maxweight = 0;
+ int dest = 0;
+ int *sur = ai_surroundingverts(vert);
+ int *sur2; 
+ for(i = 0; i < 3; i++) {
+  weight = 0;
+  if(road_freeedge(vert, sur[i])) {
+   if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we will count this one again in the following loop
+   sur2 = ai_surroundingverts(sur[i]); 
+   for(j = 0; j < 3; j++) {
+    if(road_freeedge(sur[i], sur2[j]) && data_poslegal(sur2[j])) weight += ai_vertweight(player, sur2[j]);
+   }
+   if(weight > maxweight) {
+    maxweight = weight;
+    dest = sur[i];
+   }
+  }
+ }
+ int *ret =  get_intarray(2);
+ ret[0] = dest;
+ ret[1] = maxweight;
+ return ret;
 }
