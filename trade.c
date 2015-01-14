@@ -181,21 +181,21 @@ int* trade_routine(int player, int credits, int type, int *start)
     break;
    case RIGHT: tCursor_move(1);
     break;
-   case UP: trade_change(-1, player);
+   case UP: if(tCursor != -1) trade_change(-1, player);
     break;
-   case DOWN: trade_change(1, player);
+   case DOWN: if(tCursor != -1) trade_change(1, player);
     break;
    case ENTER:
    case 't': 
-   if(type == 4)
-    devcards_domonopoly(player, tCursor);
-   if(type == 5) {
-    int i;
-    for(i = 0; i < 5; i++) ret[i] = trade[i];
-    trade_down(player);
-    return ret;
-   }
-   if(type == 4 || perform_trade(player)) {
+    if(type == 4)
+     devcards_domonopoly(player, tCursor);
+    if(type == 5) {
+     int i;
+     for(i = 0; i < 5; i++) ret[i] = trade[i];
+     trade_down(player);
+     return ret;
+    }
+    if(type == 4 || perform_trade(player)) {
      trading = 0;
      trade_down(player);
     }

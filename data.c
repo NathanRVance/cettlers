@@ -298,18 +298,28 @@ void data_upgrade(int p, int position)
 
 void data_road(int p, int pos1, int pos2)
 {
+ int temp = (pos1 < pos2)? pos1 : pos2;
+ pos2 = (pos1 > pos2)? pos1 : pos2;
+ pos1 = temp;
  int i;
  for(i = 0; player[p][ROADS][i] != 0; i += 2);
- player[p][ROADS][i] = (pos1 < pos2)? pos1 : pos2;
- player[p][ROADS][i+1] = (pos1 > pos2)? pos1 : pos2;
- player[p][MISC][ROADLENGTH] = roadlength_main(player[p][ROADS], p);
- if(player[p][MISC][ROADLENGTH] >= 5 && player[p][MISC][LONGESTROAD] == 0) {
-  int longest = 1;
-  for(i = 1; i < 4; i++) {
-   if(player[(p+i)%4][MISC][ROADLENGTH] >= player[p][MISC][ROADLENGTH]) longest = 0;
-   else player[(p+i)%4][MISC][LONGESTROAD] = 0;
+ player[p][ROADS][i] = pos1;
+ player[p][ROADS][i+1] = pos2;
+}
+
+void data_refreshlongest(void)
+{
+ int p, i;
+ for(p = 0; p < 4; p++) {
+  player[p][MISC][ROADLENGTH] = roadlength_main(player[p][ROADS], p);
+  if(player[p][MISC][ROADLENGTH] >= 5 && player[p][MISC][LONGESTROAD] == 0) {
+   int longest = 1;
+   for(i = 1; i < 4; i++) {
+    if(player[(p+i)%4][MISC][ROADLENGTH] >= player[p][MISC][ROADLENGTH]) longest = 0;
+    else player[(p+i)%4][MISC][LONGESTROAD] = 0;
+   }
+   player[p][MISC][LONGESTROAD] = longest;
   }
-  player[p][MISC][LONGESTROAD] = longest;
  }
 }
 
@@ -378,6 +388,7 @@ int data_rank(int p) //what place is player p in
 
 void data_refresh(int p)
 {
+ data_refreshlongest();
  char chp[2];
  chp[0] = p+'1';
  chp[1] = '\0';

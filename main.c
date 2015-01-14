@@ -22,15 +22,16 @@ int marker_getposition(void);
 void road_routine(int player, int pregame);
 void robber_routine(int player);
 void roll(int player);
-void devcards_routine(int player);
+void devcards_routine(int player, int hascarded);
 void ai_pregame(int player);
 void data_pregameres(int p, int vert);
 int data_isai(int p);
-void ai_routine(int player);
+void ai_routine(int player, int hascarded);
 int setup_routine(void);
 void map_create(int randomnums);
 char* cat(char a[], char b[]);
 char* itoa(int i);
+int devcards_knightoption(int player);
 
 main()
 {
@@ -113,22 +114,24 @@ void pregame_routine()
  int c, player;
  for(player = 0; player <= 3; player++) pregame(player, 0);
  for(player = 3; player >= 0; player--) pregame(player, 1);
+ map_setmessage("");
 }
 
 void main_routine()
 {
  int c;
+ int hascarded;
  int player = 0;
  while(1) {
   data_refresh(player);
   io_printmap(! data_isai(player));
   map_setmessage("");
   if(data_isai(player)) {
-   ai_routine(player);
+   ai_routine(player, hascarded);
    player = (player+1)%4;
-   //sleep(1);
+   data_refresh(player);
+   hascarded = devcards_knightoption(player);
    roll(player);
-   //sleep(1);
    continue;
   }
   switch(c = io_getkey()) {
@@ -139,12 +142,14 @@ void main_routine()
     break;
 //   case 'a': ai_routine(player);
    case 'p': player = (player+1)%4;
+             data_refresh(player);
+             hascarded = devcards_knightoption(player);
              roll(player);
     break;
    case 'b': marker_show();
              build_routine(player, 0);
     break;
-   case 'c': devcards_routine(player);
+   case 'c': devcards_routine(player, hascarded);
     break;
    case 't': marker_hide();
              trade_routine(player, 0, 0);

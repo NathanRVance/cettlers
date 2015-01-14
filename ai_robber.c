@@ -63,12 +63,12 @@ void robber_erase(int hex);
 void robber_place(int hex);
 int robber_steal(int player);
 int map_getrobberhex(void);
-int getupperleft(int hex); //returns upper left vertex
 int data_playeratvertex(int vertex);
 int data_atvertex(int p, int vertex);
 int data_rank(int p); //what place is player p in
 int map_getdat(int index, int pos);
 int abs(int);
+int* ai_vertsonhex(int hex);
 
 static int ai_playerweight(int player, int p, int vert) //player is the one who rolled, p is the player on the vert
 {
@@ -82,14 +82,11 @@ static int ai_playerweight(int player, int p, int vert) //player is the one who 
 
 static int ai_robweight(int player, int hex)
 {
- int vert = getupperleft(hex);
+ int *verts = ai_vertsonhex(hex);
  int sum = 0;
- sum += ai_playerweight(player, data_playeratvertex(vert), vert);
- sum += ai_playerweight(player, data_playeratvertex(vert+1), vert+1);
- sum += ai_playerweight(player, data_playeratvertex(vert+6), vert+6);
- sum += ai_playerweight(player, data_playeratvertex(vert+7), vert+7);
- sum += ai_playerweight(player, data_playeratvertex(vert+12), vert+12);
- sum += ai_playerweight(player, data_playeratvertex(vert+13), vert+13);
+ int i;
+ for(i = 0; i < 6; i++)
+  sum += ai_playerweight(player, data_playeratvertex(verts[i]), verts[i]);
  sum *= abs(map_getdat(hex, 1) - 7) * -1 + 6;
  return sum;
 }
@@ -115,4 +112,16 @@ void ai_moverobber(int player)
   }
  }
  robber_place(hex);
+ int *verts = ai_vertsonhex(hex);
+ max = 0;
+ int maxp = 0;
+ for(i = 0; i < 6; i++) {
+  if(ai_playerweight(player, data_playeratvertex(verts[i]), verts[i]) > max) {
+    max = ai_playerweight(player, data_playeratvertex(verts[i]), verts[i]);
+    maxp = data_playeratvertex(verts[i]);
+  }
+ }
+ if(data_totresources(maxp) > 0)
+  data_addresource(player, robber_steal(maxp), 1);
+ data_refresh(player);
 }

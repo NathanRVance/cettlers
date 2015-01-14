@@ -220,3 +220,11 @@ void io_printrolled(void)
 {
  if(ROLLED) mvprintw(1, 0, "Rolled %d", ROLLED);
 }
+
+void io_printknightoption(void)
+{
+ mvprintw(11, 12, "#####################");
+ mvprintw(12, 12, "# Play knight card? #");
+ mvprintw(13, 12, "#       (y/n)       #");
+ mvprintw(14, 12, "#####################");
+}

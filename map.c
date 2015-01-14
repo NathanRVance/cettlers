@@ -327,6 +327,8 @@ int map_islegalvert(int pos)
  for(i = 0; i < 12; i++)
   if(illegalVerts[i] == pos)
    return 0;
+ if(pos < 0 || pos > 63)
+  return 0;
  return 1;
 }
 

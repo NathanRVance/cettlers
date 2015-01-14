@@ -84,8 +84,8 @@ void devcards_refresh(int p, int pos)
 
 void devcards_knight(int player)
 {
- map_setmessage(cat(cat("Player ", itoa(player+1)), " played a knight"));
  if(data_getcards(player, KNIGHT) >= 1) {
+  map_setmessage(cat(cat("Player ", itoa(player+1)), " played a knight"));
   data_addcards(player, KNIGHT, -1);
   data_playknight(player);
   robber_routine(player);
@@ -153,8 +153,12 @@ void devcards_VP(int player)
  //do nothing
 }
 
-void devcards_handle(int player, int pos)
+void devcards_handle(int player, int pos, int hascarded)
 {
+ if(pos > 0 && hascarded) {
+  map_setmessage("Cannot play more than one card per turn");
+  return;
+ }
  switch(pos) {
   case 0:
    if(data_getresource(player, STONE) >= 1 && data_getresource(player, WHEAT >= 1) && data_getresource(player, SHEEP) >= 1)
@@ -176,7 +180,7 @@ void devcards_handle(int player, int pos)
  } 
 }
 
-void devcards_routine(int player)
+void devcards_routine(int player, int hascarded)
 {
  int carding = 1;
  int pos = 0;
@@ -188,7 +192,7 @@ void devcards_routine(int player)
     break;
    case RIGHT: pos = ++pos % 6;
     break;
-   case ENTER: devcards_handle(player, pos);
+   case ENTER: devcards_handle(player, pos, hascarded);
     carding = 0;
     break;
    case 'c': carding = 0;
@@ -197,4 +201,28 @@ void devcards_routine(int player)
     break;
   }
  }
+}
+
+void io_printknightoption(void);
+
+int devcards_knightoption(int player)
+{
+ if(data_getcards(player, KNIGHT) == 0)
+  return 0;
+ if(data_isai(player)) {
+  return ai_playknight(player);
+ }
+ io_printknightoption();
+ while(1) {
+  switch(io_getkey()) {
+   case 'y':
+    devcards_knight(player);
+    return 1;
+   case 'n':
+    return 0;
+   default:
+    break;
+  }
+ }
+ return 0;
 }

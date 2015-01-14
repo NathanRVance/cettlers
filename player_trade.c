@@ -100,7 +100,7 @@ int* accepttrade(int *tr, int player, int playerTrading)
   for(i = 0; i < 5; i++)
    if(tr[i] != tr2[i]) accept = 0;
   for(i = 0; i < 5; i++)
-   if(data_getresource(playerTrading, i) - ret[i] < 0) {
+   if(data_getresource(playerTrading, i)-ret[i] < 0) {
     ret[5] = 0;
     return ret;
    }

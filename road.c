@@ -19,7 +19,7 @@ int* data_getroad(int player, int road);
 int* ai_surroundingverts(int vert);
 int data_isai(int player);
 
-static int pos2 = 0;
+static int position = 0;
 
 int road_legalpos(int player, int pos)
 {
@@ -33,18 +33,31 @@ int road_legalpos(int player, int pos)
  return 0;
 }
 
-int road_freeedge(int pos1, int pos2)
+int map_islegalvert(int pos);
+
+//checks if pos1 and pos2 are adjacent
+int road_areadjacent(int pos1, int pos2)
 {
- int pos = (pos1 < pos2)? pos1 : pos2;
- pos2 = (pos1 > pos2)? pos1 : pos2;
- pos1 = pos;
- int i, j;
- j = 0;
+ if(! map_islegalvert(pos1) || ! map_islegalvert(pos2))
+  return 0;
  int *surrounding = ai_surroundingverts(pos1);
+ int i;
+ int j = 0;
  for(i = 0; i < 3; i++) {
   if(surrounding[i] == pos2) j = 1;
  }
  if(j == 0) return 0;
+}
+
+int road_freeedge(int pos1, int pos2)
+{
+ if(pos1 == pos2) return 0;
+ int pos = (pos1 < pos2)? pos1 : pos2;
+ pos2 = (pos1 > pos2)? pos1 : pos2;
+ pos1 = pos;
+ if(! road_areadjacent(pos1, pos2))
+  return 0;
+ int i, j;
  int *road;
  for(i = 0; i < 4; i++)
   for(j = 0; j < 15; j++) {
@@ -60,12 +73,12 @@ void road_erase(int player)
  int i;
  for(i = 0; i < MAPROWS; i++)
   util_strreplace(map[i], cat(getcolor(player), BLINK), "", 0); 
- pos2 = 0;
+ position = 0;
 }
 
 int road_build(int player, int pregame)
 {
- if(! pos2)
+ if(! position || ! road_freeedge(marker_getposition(), position))
   return 0;
  int i;
  for(i = 0; i < MAPROWS; i++)
@@ -74,7 +87,7 @@ int road_build(int player, int pregame)
   data_addresource(player, WOOD, -1);
   data_addresource(player, BRICK, -1);
  }
- data_road(player, marker_getposition(), pos2);
+ data_road(player, marker_getposition(), position);
  return 1;
 }
 
@@ -91,7 +104,7 @@ int road_left_prospect(int player)
   util_strreplace(map[i], VERTEX "___" VERTEX "*", cat(getcolor(player), BLINK VERTEX "___" VERTEX "*"), 1);
  util_strreplace(map[i], VERTEX "^___" VERTEX "*", cat(getcolor(player), BLINK VERTEX "^___" VERTEX "*"), 1);
  util_strreplace(map[i], VERTEX "^__" VERTEX "*", cat(getcolor(player), BLINK VERTEX "^__" VERTEX "*"), 1);
-  pos2 = prospos;
+  position = prospos;
   return 1;
  }
 }
@@ -106,7 +119,7 @@ int road_right_prospect(int player)
  else {
   int i = map_getrowmapvert(marker_getposition());
   util_strreplace(map[i], VERTEX "*", cat(cat(getcolor(player), BLINK), VERTEX "*"), 1);
-  pos2 = prospos;
+  position = prospos;
   return 1;
  }
 }
@@ -122,7 +135,7 @@ int road_up_prospect(int player)
   int i = map_getrowmapvert(marker_getposition());
   while(i >= map_getrowmapvert(marker_getposition()) - 1)
    util_strreplace(map[i--], ROAD, cat(getcolor(player), BLINK ROAD), map_getroadnum(marker_getposition(), 0) + 1);
-  pos2 = prospos;
+  position = prospos;
   return 1;
  }
 }
@@ -138,7 +151,7 @@ int road_down_prospect(int player)
   int i = map_getrowmapvert(marker_getposition())+1;
   while(i <= map_getrowmapvert(marker_getposition()) + 2)
    util_strreplace(map[i++], ROAD, cat(getcolor(player), BLINK ROAD), map_getroadnum(marker_getposition(), 1) + 1);
-  pos2 = prospos;
+  position = prospos;
   return 1;
  }
 }
@@ -185,7 +198,7 @@ int road_routine(int player, int pregame)
   }
  }
  while(build) {
-  io_printmap(! data_isai(player));
+  io_printmap(! data_isai(player) && ! pregame);
   switch(io_getkey()) {
    case UP: road_prospect(player, 0);
     break;

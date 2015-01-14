@@ -118,6 +118,20 @@ int* ai_surroundingverts(int vert)
  return sur;
 }
 
+int getupperleft(int hex); //returns upper left vertex
+
+int* ai_vertsonhex(int hex)
+{
+ int *sur = get_intarray(6);
+ sur[0] = getupperleft(hex);
+ sur[1] = sur[0]+1;
+ sur[2] = sur[0]+6;
+ sur[3] = sur[0]+7;
+ sur[4] = sur[0]+12;
+ sur[5] = sur[0]+13;
+ return sur;
+}
+
 //returns destination vertex
 int* ai_roadfromvert(int player, int vert)
 {

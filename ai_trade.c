@@ -79,7 +79,7 @@ int ai_playertrade(int player, int *trade, int minRating)
    }
   }
  }
- doTrade(trades[maxp], maxp, player);
+ doTrade(trades[maxp], player, maxp);
  return (maxp != player);
 }
 
@@ -117,26 +117,28 @@ int ai_trade(int player)
  }
  if(traded) return 1;
  //Now player trades
- int k, p, trade[5];
- for(i = 0; i < 5; i++) trade[i] = 0;
+ int k, p, l, trade[5];
  hand = gethand(player);
  rating = rate_hand(hand, player);
  for(k = 1; k <= 2; k++) {
   for(i = 0; i < 5; i++) {
    if(hand[i] >= k) {
-    hand[i] -= k;
     for(j = 0; j < 5; j++) {
+     hand = gethand(player);
      hand[j]++;
+     hand[i] -= k;
+     for(l = 0; l < 5; l++) trade[l] = 0;
+     trade[j] = -1;
+     trade[i] = k;
      n = rate_hand(hand, player);
      if(n > rating + 5) {//5 chosen arbitrarily
-      trade[j] = -1;
-      trade[i] = k;
-      traded += ai_playertrade(player, trade, rating);
-      trade[i] = trade[j] = 0;
+      if(ai_playertrade(player, trade, rating)) {
+       rating = rate_hand(gethand(player), player);
+       traded++;
+       break;
+      }
      }
-     hand = gethand(player);
     }
-    hand = gethand(player);
    }
   }
  }

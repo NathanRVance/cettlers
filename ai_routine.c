@@ -108,11 +108,19 @@ int* gethand(int player);
 char* map_getresname(int res);
 char* itoa(int i);
 
+int ai_playknight(int player)
+{
+ if(data_getcards(player, KNIGHT) >= 1 && ai_knighton(player)) {
+  devcards_knight(player);
+  return 1;
+ }
+ return 0;
+}
+
 int ai_playcard(int player)
 {
- if(data_getcards(player, KNIGHT) >= 1 && ai_knighton(player))
- {
-  devcards_knight(player);
+ if(ai_playknight(player)) {
+  return 1;
  } else if(data_getcards(player, BUILDROAD) && ai_canroad(player, 1)) {
   map_setmessage(cat(cat("Player ", itoa(player+1)), " played road building"));
   data_addcards(player, BUILDROAD, -1);
@@ -131,6 +139,7 @@ int ai_playcard(int player)
   }
   map_setmessage(cat(cat(cat("Player ", itoa(player+1)), " monopolized "), map_getresname(maxi)));
   devcards_domonopoly(player, maxi);
+  return 1;
  } else if(data_getcards(player, YEAROPLENTY)) {
   data_addcards(player, YEAROPLENTY, -1);
   int *hand = gethand(player);
@@ -152,6 +161,7 @@ int ai_playcard(int player)
   data_addresource(player, maxi, 1);
   data_addresource(player, maxj, 1);
   map_setmessage(cat(cat("Player ", itoa(player+1)), " had a year of plenty"));
+  return 1;
  }
  return 0;
 }
@@ -225,13 +235,15 @@ int ai_road(int player, int free)
  else if(road[1] > road[0]) dir = 1; //down
  int ret = road_prospect(player, dir);
  if(ret) road_build(player, free);
+ if(! free) map_setmessage(cat(cat("Player ", itoa(player+1)), " built a road"));
+// if(! free) map_setmessage(cat(cat(cat(cat(cat("Player ", itoa(player+1)), " built a road from "), itoa(road[0])), " to "), itoa(road[1])));
  return ret;
 }
 
-void ai_routine(int player)
+void ai_routine(int player, int hascarded)
 {
  int didsomething = 1;
- ai_playcard(player);
+ if(! hascarded) hascarded = ai_playcard(player);
  while(didsomething) {
   io_printmap(0);
   sleep(1);
