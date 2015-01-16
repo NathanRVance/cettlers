@@ -48,14 +48,19 @@ int builder_placesettlement(int pos, int player, int isPregame)
  //if col is odd and row is odd, build to the left.
  //Otherwise, build to the right.
 
-//Bug! Will delete road color of other players if to left of road
-
  if((row % 2) == (col % 2)) {
   util_strreplace(map[map_getrowmapvert(pos)], VERTEX "*.", cat(color, "@" NRM VERTEX "*"), 1);
-  util_strreplace(map[map_getrowmapvert(pos)], cat(cat(color, color), "@" NRM VERTEX "*"), cat(cat(cat(color, "@" NRM), color), VERTEX "*"), 1);
+//  util_strreplace(map[map_getrowmapvert(pos)], cat(cat(color, color), "@" NRM VERTEX "*"), cat(cat(cat(color, "@" NRM), color), VERTEX "*"), 1);
+  int i;
+  char *color2;
+  for(i = 0; i < 4; i++) {
+   color2 = getcolor(i);
+   util_strreplace(map[map_getrowmapvert(pos)], cat(cat(color2, color), "@" NRM VERTEX "*"), cat(cat(cat(color, "@" NRM), color2), VERTEX "*"), 1);
+  }
  }
- else
-  util_strreplace(map[map_getrowmapvert(pos)], "." VERTEX "*", cat(cat(VERTEX "*", color), "@" NRM), 1);
+ else {
+   util_strreplace(map[map_getrowmapvert(pos)], "." VERTEX "*", cat(cat(VERTEX "*", color), "@" NRM), 1);
+ }
  data_place(player, pos);
  return 1;
 }

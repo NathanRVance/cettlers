@@ -63,8 +63,12 @@ int ai_playertrade(int player, int *trade, int minRating)
  int p, i;
  for(i = 0; i < 6; i++) trades[player][i] = 0;
  for(p = 1; p < 4; p++) {
-  int *t = accepttrade(trade, (player+p)%4, player);
-  for(i = 0; i < 6; i++) trades[(player+p)%4][i] = t[i];
+  if(data_vps((player+p)%4) < 7) {
+   int *t = accepttrade(trade, (player+p)%4, player);
+   for(i = 0; i < 6; i++) trades[(player+p)%4][i] = t[i];
+  } else {
+   trades[(player+p)%4][5] = 0; //we won't even consider those close to winning
+  }
  }
  int max, maxp, *hand;
  max = minRating;

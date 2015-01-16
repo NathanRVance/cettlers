@@ -24,6 +24,7 @@ void devcards_knight(int player);
 char* cat(char a[], char b[]);
 char* itoa(int i);
 void io_printmap(int printsdat);
+int* ai_roadfromvert(int player, int vert);
 
 int ai_shouldsettle(int player, int vert)
 {
@@ -179,9 +180,21 @@ int* ai_canroad(int player, int free)
   return road;
  }
  //somewhere to build to
- int i, j, *surrounding;
+ int i, j, *surrounding, maxi;
  int weight = 0;
- int primaryweight = 0;
+ for(i = 1; i < 64; i++) {
+  if(road_legalpos(player, i)) {
+   if(ai_roadfromvert(player, i)[1] > weight) {
+    weight = ai_roadfromvert(player, i)[1];
+    maxi = i;
+   }
+  }
+ }
+ if(! weight) return road;
+ road[0] = maxi;
+ road[1] = ai_roadfromvert(player, maxi)[0];
+
+/* int primaryweight = 0;
  //start with spaces within one road
  for(i = 1; i < 64; i++) {
   if(! road_legalpos(player, i)) continue;
@@ -217,7 +230,7 @@ int* ai_canroad(int player, int free)
     }
    }
   }
- }
+ }*/
  return road;
 }
 
