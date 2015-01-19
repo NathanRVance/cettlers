@@ -115,6 +115,20 @@ int data_isai(int p)
  return player[p][MISC][ISAI];
 }
 
+int data_multihumans(void)
+{
+ int p;
+ int totHumans = 0;
+ for(p = 0; p < 4; p++) {
+  if(! data_isai(p)) {
+   totHumans++;
+  }
+ }
+ if(totHumans >= 2)
+  return 1;
+ return 0;
+}
+
 void data_setai(int p, int set)
 {
  player[p][MISC][ISAI] = set;

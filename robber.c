@@ -21,6 +21,8 @@ void trade_routine(int player, int credits, int type);
 int getupperleft(int hex);
 void marker_hide(void);
 void ai_moverobber(int player);
+void pass_between_humans(int to);
+int data_multihumans(void);
 
 //Returns how many hexes in the robber is
 static int getoffset(int hex)
@@ -205,8 +207,10 @@ void robber_discard(int player)
 {
  int i;
  for(i = 0; i < 4; i++) {
-  if(data_totresources(player) > 7)
+  if(data_totresources(player) > 7) {
+   if(! data_isai(player) && data_multihumans())
+    pass_between_humans(player);
    robber_discardhandler(player, data_totresources(player) / 2);
-  player = (player + 1) % 4;
+  }
  }
 }

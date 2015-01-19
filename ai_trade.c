@@ -21,7 +21,7 @@ int rate_hand(int *hand, int player)
  else if(hand[WOOD] && hand[BRICK] && ai_canroad(player, 0)[0] > 0)
   sum += 8;
  if(hand[WHEAT] && hand[SHEEP] && hand[STONE])
-  sum += 7;
+  sum += 0; //Don't trade to get devcards
  int i;
  int diversity = 0;
  int *rates = ai_rateres(player);

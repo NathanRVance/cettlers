@@ -22,7 +22,7 @@ int marker_getposition(void);
 void road_routine(int player, int pregame);
 void robber_routine(int player);
 void roll(int player);
-void devcards_routine(int player, int hascarded);
+int devcards_routine(int player, int hascarded);
 void ai_pregame(int player);
 void data_pregameres(int p, int vert);
 int data_isai(int p);
@@ -32,6 +32,8 @@ void map_create(int randomnums);
 char* cat(char a[], char b[]);
 char* itoa(int i);
 int devcards_knightoption(int player);
+void io_printgeneric(char *s);
+void pass_between_humans(int to);
 
 main()
 {
@@ -53,10 +55,10 @@ void halt()
  exit(0);
 }
 
-void quit()
+void quit(int printres)
 {
  map_setmessage("Are you sure you want to quit? (y/n)");
- io_printmap(1);
+ io_printmap(printres);
  if(io_getkey() == 'y') {
   halt();
  }
@@ -95,11 +97,14 @@ void pregame(int player, int res)
     io_printhelp();
     io_getkey();
     break;
-   case 'q': quit();
+   case 'q': quit(0);
     break;
    case 'a':
     ai_pregame(player);
     go = 0;
+    break;
+   case 'u':
+    pass_between_humans(1);
     break;
    default: map_setmessage("Press 'b' to build");
     break;
@@ -140,8 +145,10 @@ void main_routine()
    case UP:
    case DOWN: marker_move(c);
     break;
-//   case 'a': ai_routine(player);
+//   case 'a': ai_routine(player, 0);
    case 'p': player = (player+1)%4;
+             if(! data_isai(player))
+              pass_between_humans(player);
              data_refresh(player);
              hascarded = devcards_knightoption(player);
              roll(player);
@@ -149,7 +156,7 @@ void main_routine()
    case 'b': marker_show();
              build_routine(player, 0);
     break;
-   case 'c': devcards_routine(player, hascarded);
+   case 'c': hascarded += devcards_routine(player, hascarded);
     break;
    case 't': marker_hide();
              trade_routine(player, 0, 0);
@@ -160,10 +167,17 @@ void main_routine()
    case 'h': io_printhelp();
              io_getkey();
     break;
-   case 'q': quit();
+   case 'q': quit(1);
     break;
    default: map_setmessage("Undefined key, press 'h' for help");
     break;
   }
  }
+}
+
+void pass_between_humans(int to)
+{
+ io_printmap(0);
+ io_printgeneric(cat(cat("Please pass control to Player ", itoa(to+1)), ".\n    Press any key to continue."));
+ io_getkey();
 }

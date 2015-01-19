@@ -8,6 +8,8 @@ int* trade_routine(int player, int credits, int type, int *start);
 void io_selectTrade(int accepted[3], int cursor, int player);
 void map_setmessage(char s[]);
 int* get_intarray(int size);
+int data_multihumans(void);
+void pass_between_humans(int to);
 
 //+|- in trade[] is from the point of view of player2
 void doTrade(int *trade, int player1, int player2)
@@ -93,6 +95,9 @@ int* accepttrade(int *tr, int player, int playerTrading)
     ret[5] = 0;
     return ret;
    }
+  if(data_multihumans()) {
+   pass_between_humans(player);
+  }
   map_setmessage(cat(cat("Player ", itoa(playerTrading+1)), " has offered a trade"));
   int *tr2 = trade_routine(player, 0, 5, tr);
   for(i = 0; i < 5; i++) ret[i] = tr2[i];

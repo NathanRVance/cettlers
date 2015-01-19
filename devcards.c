@@ -82,17 +82,19 @@ void devcards_refresh(int p, int pos)
  io_printcards(devcards_remaining(), data_getcards(p, KNIGHT), data_getcards(p, BUILDROAD), data_getcards(p, MONOPOLY), data_getcards(p, YEAROPLENTY), data_getcards(p, VP), pos);
 }
 
-void devcards_knight(int player)
+int devcards_knight(int player)
 {
  if(data_getcards(player, KNIGHT) >= 1) {
   map_setmessage(cat(cat("Player ", itoa(player+1)), " played a knight"));
   data_addcards(player, KNIGHT, -1);
   data_playknight(player);
   robber_routine(player);
+  return 1;
  }
+ return 0;
 }
 
-void devcards_buildroad(int player)
+int devcards_buildroad(int player)
 {
  if(data_getcards(player, BUILDROAD) >= 1) {
   data_addcards(player, BUILDROAD, -1);
@@ -118,15 +120,19 @@ void devcards_buildroad(int player)
   }
   map_setmessage("");
   io_printmap();
+  return 1;
  }
+ return 0;
 }
 
-void devcards_monopoly(int player)
+int devcards_monopoly(int player)
 {
  if(data_getcards(player, MONOPOLY) >= 1) {
   data_addcards(player, MONOPOLY, -1);
   trade_routine(player, 1, 4);
+  return 1;
  }
+ return 0;
 }
 
 void devcards_domonopoly(int player, int res)
@@ -140,24 +146,27 @@ void devcards_domonopoly(int player, int res)
  data_addresource(player, res, tot);
 }
 
-void devcards_YOP(int player)
+int devcards_YOP(int player)
 {
  if(data_getcards(player, YEAROPLENTY) >= 1) {
   data_addcards(player, YEAROPLENTY, -1);
   trade_routine(player, 2, 3);
+  return 1;
  }
+ return 0;
 }
 
-void devcards_VP(int player)
+int devcards_VP(int player)
 {
  //do nothing
+ return 0;
 }
 
-void devcards_handle(int player, int pos, int hascarded)
+int devcards_handle(int player, int pos, int hascarded)
 {
  if(pos > 0 && hascarded) {
   map_setmessage("Cannot play more than one card per turn");
-  return;
+  return 0;
  }
  switch(pos) {
   case 0:
@@ -165,26 +174,25 @@ void devcards_handle(int player, int pos, int hascarded)
     devcards_buy(player);
    else map_setmessage("Not enough resources, requires one stone, wheat and sheep.");
    break;
-  case 1: devcards_knight(player);
+  case 1: return devcards_knight(player);
    break;
-  case 2: devcards_buildroad(player);
+  case 2: return devcards_buildroad(player);
    break;
-  case 3: devcards_monopoly(player);
+  case 3: return devcards_monopoly(player);
    break;
-  case 4: devcards_YOP(player);
+  case 4: return devcards_YOP(player);
    break;
-  case 5: devcards_VP(player);
+  case 5: return devcards_VP(player);
    break;
   default:
    break;
  } 
 }
 
-void devcards_routine(int player, int hascarded)
+int devcards_routine(int player, int hascarded)
 {
- int carding = 1;
  int pos = 0;
- while(carding) {
+ while(1) {
   devcards_refresh(player, pos);
   switch(io_getkey()) {
    case LEFT:
@@ -192,10 +200,9 @@ void devcards_routine(int player, int hascarded)
     break;
    case RIGHT: pos = ++pos % 6;
     break;
-   case ENTER: devcards_handle(player, pos, hascarded);
-    carding = 0;
+   case ENTER: return devcards_handle(player, pos, hascarded);
     break;
-   case 'c': carding = 0;
+   case 'c': return 0;
     break;
    default:
     break;
@@ -203,7 +210,7 @@ void devcards_routine(int player, int hascarded)
  }
 }
 
-void io_printknightoption(void);
+void io_printgeneric(char *s);
 
 int devcards_knightoption(int player)
 {
@@ -212,7 +219,7 @@ int devcards_knightoption(int player)
  if(data_isai(player)) {
   return ai_playknight(player);
  }
- io_printknightoption();
+ io_printgeneric("Play knight card?\n      (y/n)");
  while(1) {
   switch(io_getkey()) {
    case 'y':

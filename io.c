@@ -221,10 +221,40 @@ void io_printrolled(void)
  if(ROLLED) mvprintw(1, 0, "Rolled %d", ROLLED);
 }
 
-void io_printknightoption(void)
+void io_printgeneric(char *s)
 {
- mvprintw(11, 12, "#####################");
- mvprintw(12, 12, "# Play knight card? #");
- mvprintw(13, 12, "#       (y/n)       #");
- mvprintw(14, 12, "#####################");
+ int i;
+ int currentLine = 0;
+ int maxLine = 0;
+ for(i = 0; s[i] != '\0'; i++) {
+  currentLine++;
+  if(maxLine < currentLine)
+   maxLine = currentLine;
+  if(s[i] == '\n')
+   currentLine = 0;
+ }
+ maxLine--;
+ int x = 25 - maxLine / 2;
+ int y = 11;
+ for(i = 0; i < maxLine+4; i++)
+  mvprintw(y, x+i, "#");
+ y++;
+ i = 0;
+ while(1) {
+  currentLine = 0;
+  mvprintw(y++, x, "# ");
+  while(s[i] != '\n' && s[i] != '\0') {
+   addch(s[i++]);
+   currentLine++;
+  }
+  while(currentLine++ < maxLine) {
+   addch(' ');
+  }
+  addch(' ');
+  addch('#');
+  if(s[i] == '\0') break;
+  i++;
+ }
+ for(i = 0; i < maxLine+4; i++)
+  mvprintw(y, x+i, "#");
 }

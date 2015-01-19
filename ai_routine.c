@@ -91,6 +91,9 @@ int ai_card(int player)
  if(data_getresource(player, STONE) < 1 || data_getresource(player, WHEAT) < 1 || data_getresource(player, SHEEP) < 1 || devcards_remaining() == 0) {
   return 0;
  }
+ if((data_getresource(player, STONE) >= 3 || (data_getresource(player, STONE) == 2 && data_getresource(player, WHEAT) == 2)) && ai_canupgrade(player)) {
+  return 0; //save up for a city
+ }
  devcards_buy(player);
  map_setmessage(cat(cat("Player ", itoa(player+1)), " purchased a dev card"));
  return 1;
@@ -171,13 +174,15 @@ int* ai_canroad(int player, int free)
 {
  static int road[2];
  road[0] = road[1] = 0;
- //has resources
- if(! free && (data_getresource(player, WOOD) < 1 || data_getresource(player, BRICK) < 1 || data_elementsremaining(player, 3) == 0)) {
-  return road;
- }
- //should use these resources rather than save for settlement
- if(! free && (data_getresource(player, SHEEP) >= 1 || data_getresource(player, WHEAT) >= 1) && (data_getresource(player, WOOD) == 1 || data_getresource(player, BRICK) == 1) && ai_cansettle(player)) {
-  return road;
+ if(! free) {
+  //has resources
+  if(data_getresource(player, WOOD) < 1 || data_getresource(player, BRICK) < 1 || data_elementsremaining(player, 3) == 0) {
+   return road;
+  }
+  //should use these resources rather than save for settlement
+  if((data_getresource(player, SHEEP) >= 1 || data_getresource(player, WHEAT) >= 1) && (data_getresource(player, WOOD) == 1 || data_getresource(player, BRICK) == 1) && ai_cansettle(player)) {
+   return road;
+  }
  }
  //somewhere to build to
  int i, j, *surrounding, maxi;
@@ -240,7 +245,7 @@ int ai_road(int player, int free)
  if(! road[0]) {
   return 0;
  }
- marker_setposition(road[0]);
+/* marker_setposition(road[0]);
  int dir;
  if(road[1] == road[0]-1) dir = 2; //left
  else if(road[1] == road[0]+1) dir = 3; //right
@@ -248,9 +253,11 @@ int ai_road(int player, int free)
  else if(road[1] > road[0]) dir = 1; //down
  int ret = road_prospect(player, dir);
  if(ret) road_build(player, free);
+*/
+ road_vertbuild(player, road[0], road[1], free);
  if(! free) map_setmessage(cat(cat("Player ", itoa(player+1)), " built a road"));
 // if(! free) map_setmessage(cat(cat(cat(cat(cat("Player ", itoa(player+1)), " built a road from "), itoa(road[0])), " to "), itoa(road[1])));
- return ret;
+ return 1;
 }
 
 void ai_routine(int player, int hascarded)

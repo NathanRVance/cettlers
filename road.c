@@ -19,7 +19,7 @@ int* data_getroad(int player, int road);
 int* ai_surroundingverts(int vert);
 int data_isai(int player);
 
-static int position = 0;
+static int position;
 
 int road_legalpos(int player, int pos)
 {
@@ -184,6 +184,7 @@ int road_prospect(int player, int dir)
 int road_routine(int player, int pregame)
 {
  int build = 1;
+ position = 0;
  if(! road_legalpos(player, marker_getposition())) {
   map_setmessage("Error, can't build here.");
   return 0;

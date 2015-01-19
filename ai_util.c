@@ -146,7 +146,7 @@ int* ai_roadfromvert(int player, int vert)
    if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we will count this one again in the following loop
    sur2 = ai_surroundingverts(sur[i]); 
    for(j = 0; j < 3; j++) {
-    if(road_freeedge(sur[i], sur2[j]) && data_poslegal(sur2[j])) weight += ai_vertweight(player, sur2[j]);
+    if(road_freeedge(sur[i], sur2[j]) && data_poslegal(sur2[j])) weight += ai_vertweight(player, sur2[j]) * ai_vertweight(player, sur2[j]); //square it!
    }
    if(weight > maxweight) {
     maxweight = weight;
