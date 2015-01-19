@@ -132,10 +132,10 @@ int* ai_vertsonhex(int hex)
  return sur;
 }
 
-//returns destination vertex
+//returns destination vertex and its weight
 int* ai_roadfromvert(int player, int vert)
 {
- int i, j, weight;
+ int i, j, weight, w;
  int maxweight = 0;
  int dest = 0;
  int *sur = ai_surroundingverts(vert);
@@ -143,11 +143,15 @@ int* ai_roadfromvert(int player, int vert)
  for(i = 0; i < 3; i++) {
   weight = 0;
   if(road_freeedge(vert, sur[i])) {
-   if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we will count this one again in the following loop
+   if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we might count this one again in the following loop
    sur2 = ai_surroundingverts(sur[i]); 
+   w = 0;
    for(j = 0; j < 3; j++) {
-    if(road_freeedge(sur[i], sur2[j]) && data_poslegal(sur2[j])) weight += ai_vertweight(player, sur2[j]) * ai_vertweight(player, sur2[j]); //square it!
+    if(road_freeedge(sur[i], sur2[j]) && data_poslegal(sur2[j]))
+     if(ai_vertweight(player, sur2[j]) > w)
+      w = ai_vertweight(player, sur2[j]);
    }
+   weight += w * w; //square it!
    if(weight > maxweight) {
     maxweight = weight;
     dest = sur[i];

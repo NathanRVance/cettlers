@@ -162,8 +162,8 @@ int data_playeratvertex(int vertex)
 int* data_getroad(int p, int road)
 {
  static int ret[2];
- ret[0] = player[p][ROADS][road/2];
- ret[1] = player[p][ROADS][road/2+1];
+ ret[0] = player[p][ROADS][road*2];
+ ret[1] = player[p][ROADS][road*2+1];
  return ret;
 }
 
@@ -264,10 +264,12 @@ void data_pregameres(int p, int vert)
  }
 }
 
+int map_islegalvert(int pos);
+
 //Checks for anything within one vertex
 int data_poslegal(int pos)
 {
- if(pos <= 1 || pos == 4 || pos == 5 || pos == 60 || pos == 61 || pos >= 64)
+ if(! map_islegalvert(pos))
   return 0;
  //Check all other settlements/cities for a row +- 1 or
   // if even column, a column - 1,

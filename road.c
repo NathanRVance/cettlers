@@ -42,11 +42,10 @@ int road_areadjacent(int pos1, int pos2)
   return 0;
  int *surrounding = ai_surroundingverts(pos1);
  int i;
- int j = 0;
  for(i = 0; i < 3; i++) {
-  if(surrounding[i] == pos2) j = 1;
+  if(surrounding[i] == pos2) return 1;
  }
- if(j == 0) return 0;
+ return 0;
 }
 
 int road_freeedge(int pos1, int pos2)
@@ -62,7 +61,7 @@ int road_freeedge(int pos1, int pos2)
  for(i = 0; i < 4; i++)
   for(j = 0; j < 15; j++) {
    road = data_getroad(i, j);
-   if(road[0] == pos1 && road[1] == pos2)
+   if((road[0] == pos1 && road[1] == pos2) || (road[1] == pos1 && road[0] == pos2))
     return 0;
   }
  return 1;
