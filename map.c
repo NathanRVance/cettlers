@@ -239,6 +239,7 @@ static void map_distribute(int n[], int res[], int pos)
  }
 }
 
+//Pos 0 is resource, 1 is number, 2 is robber?
 int map_getdat(int index, int pos)
 {
  return mapdat[map_getrowhex(index)][map_getcolhex(index)][pos];

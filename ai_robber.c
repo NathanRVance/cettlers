@@ -76,7 +76,7 @@ static int ai_playerweight(int player, int p, int vert) //player is the one who 
  int num = 1;
  if(p == player) num *= -1;
  num *= data_atvertex(p, vert);
- num *= (5 - data_rank(p));
+ if(data_rank(p) == 1) num *= 3;
  return num;
 }
 

@@ -14,6 +14,8 @@ void io_printmap(int printsdat);
 void io_printwin(int player, int cards);
 void halt(void);
 int* ai_surroundinghexes(int vert);
+void stats_roll(int roll);
+
 
 //4 playes, 5 things to keep track of, 30 integers to keep track of each.
 static int player[4][5][30];
@@ -141,6 +143,7 @@ void data_setai(int p, int set)
 // 2: city
 int data_atvertex(int p, int vertex)
 {
+ if(p == -1) return -1;
  int i;
  for(i = 0; i < 5; i++)
   if(player[p][SETTLEMENTS][i] == vertex) return 1;
@@ -222,6 +225,7 @@ void roll(int player)
 {
  int roll = rand() % 6 + rand() % 6 + 2;
  ROLLED = roll;
+ stats_roll(roll);
  if(roll == 7) {
   robber_discard(player);
   map_setmessage(cat(cat("Player ", itoa(player+1)), ", please move the robber."));

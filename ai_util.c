@@ -47,22 +47,31 @@ int* ai_rateres(int player)
 {
  static int res[5];
  int weight[5];
+ int mapweight[5];
  int i, j;
- for(i = 0; i < 5; i++)
-  weight[i] = 0;
- for(i = 0; i < 22; i++)
-  if(map_getdat(i, 0) != 5 && map_getdat(i, 0) != -1)
+ for(i = 0; i < 5; i++) weight[i] = 0;
+ for(i = 0; i < 5; i++) mapweight[i] = 0;
+ for(i = 0; i < 22; i++) {
+  if(map_getdat(i, 0) != 5 && map_getdat(i, 0) != -1) {
    weight[map_getdat(i, 0)] += data_onhex(player, i) * (abs(map_getdat(i, 1) - 7) * -1 + 6);
+   mapweight[map_getdat(i, 0)] += (abs(map_getdat(i, 1) - 7) * -1 + 6);
+  }
+ }
 
  int max = 0;
- for(i = 0; i < 5; i++)
+ int mapmax = 0;
+ for(i = 0; i < 5; i++) {
   if(max < weight[i]) max = weight[i];
+  if(mapmax < mapweight[i]) mapmax = mapweight[i];
+ }
+ for(i = 0; i < 5; i++) {
+  res[i] = 4 - mapweight[i] * 3 / mapmax;
+ }
  if(max == 0) {
-  for(i = 0; i < 5; i++) res[i] = 1;
   return res;
  }
  for(i = 0; i < 5; i++) {
-  res[i] = 5 - weight[i] * 4 / max;
+  res[i] += 5 - weight[i] * 4 / max;
  }
  return res;
 }
@@ -140,8 +149,12 @@ int* ai_roadfromvert(int player, int vert)
  int dest = 0;
  int *sur = ai_surroundingverts(vert);
  int *sur2; 
+ int handicap = 0;
+ if(data_poslegal(vert)) {
+  handicap = ai_vertweight(player, vert);
+ }
  for(i = 0; i < 3; i++) {
-  weight = 0;
+  weight = handicap * -1;
   if(road_freeedge(vert, sur[i])) {
    if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we might count this one again in the following loop
    sur2 = ai_surroundingverts(sur[i]); 

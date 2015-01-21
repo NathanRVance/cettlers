@@ -25,6 +25,8 @@ char* cat(char a[], char b[]);
 char* itoa(int i);
 void io_printmap(int printsdat);
 int* ai_roadfromvert(int player, int vert);
+char* itoa(int i);
+int ai_playcard(int player);
 
 int ai_shouldsettle(int player, int vert)
 {
@@ -99,77 +101,6 @@ int ai_card(int player)
  return 1;
 }
 
-int ai_knighton(int player)
-{
- return data_onhex(player, map_getrobberhex());
-}
-
-int ai_road(int player, int free);
-int* ai_canroad(int player, int free);
-void devcards_monopoly(int player);
-int rate_hand(int *hand, int player);
-int* gethand(int player);
-char* map_getresname(int res);
-char* itoa(int i);
-
-int ai_playknight(int player)
-{
- if(data_getcards(player, KNIGHT) >= 1 && ai_knighton(player)) {
-  devcards_knight(player);
-  return 1;
- }
- return 0;
-}
-
-int ai_playcard(int player)
-{
- if(ai_playknight(player)) {
-  return 1;
- } else if(data_getcards(player, BUILDROAD) && ai_canroad(player, 1)) {
-  map_setmessage(cat(cat("Player ", itoa(player+1)), " played road building"));
-  data_addcards(player, BUILDROAD, -1);
-  ai_road(player, 1);
-  ai_road(player, 1);
- } else if(data_getcards(player, MONOPOLY)) {
-  data_addcards(player, MONOPOLY, -1);
-  int *res = ai_rateres(player);
-  int i, max, maxi;
-  max = maxi = 0;
-  for(i = 0; i < 5; i++) {
-   if(res[i] > max) {
-    max = res[i];
-    maxi = i;
-   }
-  }
-  map_setmessage(cat(cat(cat("Player ", itoa(player+1)), " monopolized "), map_getresname(maxi)));
-  devcards_domonopoly(player, maxi);
-  return 1;
- } else if(data_getcards(player, YEAROPLENTY)) {
-  data_addcards(player, YEAROPLENTY, -1);
-  int *hand = gethand(player);
-  int rating = rate_hand(hand, player);
-  int i, j, maxi, maxj;
-  for(i = 0; i < 5; i++) {
-   hand[i]++;
-   for(j = 0; j < 5; j++) {
-    hand[j]++;
-    if(rate_hand(hand, player) > rating) {
-     rating = rate_hand(hand, player);
-     maxi = i;
-     maxj = j;
-    }
-    hand[j]--;
-   }
-   hand[i]--;
-  }
-  data_addresource(player, maxi, 1);
-  data_addresource(player, maxj, 1);
-  map_setmessage(cat(cat("Player ", itoa(player+1)), " had a year of plenty"));
-  return 1;
- }
- return 0;
-}
-
 int* ai_canroad(int player, int free)
 {
  static int road[2];
@@ -195,7 +126,7 @@ int* ai_canroad(int player, int free)
    }
   }
  }
- if(! weight) return road;
+ if(weight < 1) return road;
  road[0] = maxi;
  road[1] = ai_roadfromvert(player, maxi)[0];
 
