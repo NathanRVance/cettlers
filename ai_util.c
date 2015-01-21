@@ -152,6 +152,7 @@ int* ai_roadfromvert(int player, int vert)
  int handicap = 0;
  if(data_poslegal(vert)) {
   handicap = ai_vertweight(player, vert);
+  handicap *= handicap; //square it!
  }
  for(i = 0; i < 3; i++) {
   weight = handicap * -1;

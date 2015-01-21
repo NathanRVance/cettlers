@@ -126,7 +126,7 @@ int* ai_canroad(int player, int free)
    }
   }
  }
- if(weight < 1) return road;
+ if(weight < 1 && ! free) return road;
  road[0] = maxi;
  road[1] = ai_roadfromvert(player, maxi)[0];
 
