@@ -99,5 +99,6 @@ int roadlength_main(int roads[], int player)
   len = dfs(i, graph, beento, INF);
   if(len > max) max = len;
  }
+ if(max == 0) max++;
  return max - 1; //See above note in return line for dfs
 }

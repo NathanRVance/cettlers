@@ -44,7 +44,7 @@ void data_init()
  ports[1][0] = 23;
  ports[1][1] = 29;
  ports[2][0] = 57;
- ports[2][1] = 58;
+ ports[2][1] = 63;
  ports[3][0] = 2;
  ports[3][1] = 3;
  ports[4][0] = 42;
@@ -327,6 +327,11 @@ void data_road(int p, int pos1, int pos2)
  player[p][ROADS][i+1] = pos2;
 }
 
+int data_getroadlen(int p)
+{
+ return player[p][MISC][ROADLENGTH];
+}
+
 void data_refreshlongest(void)
 {
  int p, i;
@@ -341,6 +346,18 @@ void data_refreshlongest(void)
    player[p][MISC][LONGESTROAD] = longest;
   }
  }
+}
+
+int data_hypotheticalroadlength(int p, int* roads, int n)
+{
+ int i;
+ for(i = 0; i < n; i++)
+  data_road(p, roads[i*2], roads[i*2+1]);
+ int ret = roadlength_main(player[p][ROADS], p);
+ for(i = 0; player[p][ROADS][i] != 0; i += 2);
+ i -= n*2;
+ for(; i < 30; i++) player[p][ROADS][i] = 0;
+ return ret;
 }
 
 int get_trade(int p, int res)

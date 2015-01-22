@@ -11,6 +11,8 @@ int* ai_surroundingverts(int vert);
 int ai_vertweight(int player, int vert);
 int data_poslegal(int pos);
 int* get_intarray(int size);
+int data_hypotheticalroadlength(int p, int* roads, int n);
+int data_getroadlen(int p);
 
 int* ai_surroundinghexes(int vert)
 {
@@ -150,6 +152,14 @@ int* ai_roadfromvert(int player, int vert)
  int *sur = ai_surroundingverts(vert);
  int *sur2; 
  int handicap = 0;
+ int roadlen, newroadlen, nextlongest;
+ nextlongest = 0;
+ for(j = 1; j < 4; j++) {
+  if(data_getroadlen((player+j)%4) > nextlongest) {
+   nextlongest = data_getroadlen((player+j)%4);
+  }
+ }
+ int *ret = get_intarray(2);
  if(data_poslegal(vert)) {
   handicap = ai_vertweight(player, vert);
   handicap *= handicap; //square it!
@@ -157,7 +167,14 @@ int* ai_roadfromvert(int player, int vert)
  for(i = 0; i < 3; i++) {
   weight = handicap * -1;
   if(road_freeedge(vert, sur[i])) {
-   if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]); //we might count this one again in the following loop
+   roadlen = data_hypotheticalroadlength(player, ret, 0);
+   ret[0] = vert;
+   ret[1] = sur[i];
+   newroadlen = data_hypotheticalroadlength(player, ret, 1);
+   if(newroadlen >= 5 && newroadlen > nextlongest) {
+    weight += 5;
+   }
+   if(data_poslegal(sur[i])) weight += ai_vertweight(player, sur[i]) * ai_vertweight(player, sur[i]) * 2; //we won't count this one again in the following loop
    sur2 = ai_surroundingverts(sur[i]); 
    w = 0;
    for(j = 0; j < 3; j++) {
@@ -172,7 +189,6 @@ int* ai_roadfromvert(int player, int vert)
    }
   }
  }
- int *ret =  get_intarray(2);
  ret[0] = dest;
  ret[1] = maxweight;
  return ret;

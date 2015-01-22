@@ -34,6 +34,7 @@ char* itoa(int i);
 int devcards_knightoption(int player);
 void io_printgeneric(char *s);
 void pass_between_humans(int to);
+void devcards_newturn(void);
 
 main()
 {
@@ -116,9 +117,10 @@ void pregame(int player, int res)
 void pregame_routine()
 {
  marker_move(RIGHT);
- int c, player;
- for(player = 0; player <= 3; player++) pregame(player, 0);
- for(player = 3; player >= 0; player--) pregame(player, 1);
+ int c, player, p;
+ p = rand() % 4; //player that starts
+ for(player = 0; player < 4; player++) pregame((player+p)%4, 0);
+ for(player = 3; player >= 0; player--) pregame((player+p)%4, 1);
  map_setmessage("");
 }
 
@@ -135,6 +137,7 @@ void main_routine()
    ai_routine(player, hascarded);
    player = (player+1)%4;
    data_refresh(player);
+   devcards_newturn();
    hascarded = devcards_knightoption(player);
    roll(player);
    continue;
@@ -150,6 +153,7 @@ void main_routine()
              if(! data_isai(player))
               pass_between_humans(player);
              data_refresh(player);
+             devcards_newturn();
              hascarded = devcards_knightoption(player);
              roll(player);
     break;

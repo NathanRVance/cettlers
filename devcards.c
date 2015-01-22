@@ -17,6 +17,14 @@ void map_setmessage(char s[]);
 void trade_routine(int player, int credits, int type);
 int road_routine(int player, int pregame);
 
+static int cardsPurchased[25];
+
+void devcards_newturn(void)
+{
+ int i;
+ for(i = 0; i < 25; i++) cardsPurchased[i] = -1;
+}
+
 void devcards_init()
 {
  int i;
@@ -73,7 +81,11 @@ void devcards_buy(int player)
   data_addresource(player, WHEAT, -1);
   data_addresource(player, SHEEP, -1);
   data_addresource(player, STONE, -1);
-  data_addcards(player, devcards_draw(), 1);
+  int card = devcards_draw();
+  data_addcards(player, card, 1);
+  int i = -1;
+  while(cardsPurchased[++i] != -1);
+  cardsPurchased[i] = card;
  }
 }
 
@@ -162,10 +174,26 @@ int devcards_VP(int player)
  return 0;
 }
 
+int devcards_canplay(int player, int card)
+{
+ if(data_getcards(player, card) == 0) return 1; //remember, we're just checking for playing a card the same turn it was purchased.
+ int numPurchased = 0;
+ int i;
+ for(i = 0; cardsPurchased[i] != -1; i++) {
+  if(cardsPurchased[i] == card) numPurchased++;
+ }
+ if(data_getcards(player, card) > numPurchased) return 1;
+ return 0;
+}
+
 int devcards_handle(int player, int pos, int hascarded)
 {
  if(pos > 0 && hascarded) {
   map_setmessage("Cannot play more than one card per turn");
+  return 0;
+ }
+ if(pos > 0 && ! devcards_canplay(player, pos-1)) {
+  map_setmessage("Cannot play a card the same turn you buy it");
   return 0;
  }
  switch(pos) {
@@ -173,6 +201,7 @@ int devcards_handle(int player, int pos, int hascarded)
    if(data_getresource(player, STONE) >= 1 && data_getresource(player, WHEAT >= 1) && data_getresource(player, SHEEP) >= 1)
     devcards_buy(player);
    else map_setmessage("Not enough resources, requires one stone, wheat and sheep.");
+   return 0;
    break;
   case 1: return devcards_knight(player);
    break;
