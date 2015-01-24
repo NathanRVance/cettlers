@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 static void replace(char a[], char b[], int x, int y);
 
@@ -105,4 +106,13 @@ char* itoa(int i)
  num[4] = '\0';
  for(i = 0; num[i] == ' '; i++);
  return &num[i];
+}
+
+//sleep in tenths of a second
+int bettersleep(int ds)
+{
+ struct timespec tim, tim2;
+ tim.tv_sec = ds/10;
+ tim.tv_nsec = (ds%10)*100000000L;
+ return nanosleep(&tim , &tim2);
 }

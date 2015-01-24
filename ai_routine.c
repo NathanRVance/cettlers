@@ -27,6 +27,7 @@ void io_printmap(int printsdat);
 int* ai_roadfromvert(int player, int vert);
 char* itoa(int i);
 int ai_playcard(int player);
+int data_sleep();
 
 int ai_shouldsettle(int player, int vert)
 {
@@ -148,7 +149,7 @@ void ai_routine(int player, int hascarded)
  if(! hascarded) hascarded = ai_playcard(player);
  while(didsomething) {
   io_printmap(0);
-  sleep(1);
+  data_sleep();
   if(ai_settle(player) || ai_city(player) || ai_road(player, 0))
    didsomething = 1;
   else

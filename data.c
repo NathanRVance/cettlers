@@ -348,6 +348,18 @@ void data_refreshlongest(void)
  }
 }
 
+static int sleepds;
+
+void data_setsleeptime(int ds)
+{
+ sleepds = ds;
+}
+
+int data_sleep(void)
+{
+ return bettersleep(sleepds);
+}
+
 int data_hypotheticalroadlength(int p, int* roads, int n)
 {
  int i;

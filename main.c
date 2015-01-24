@@ -1,7 +1,6 @@
 #include "color.h"
 #include "settlers.h"
 #include <stdlib.h>
-#include <unistd.h>
 
 void io_printmap(int printsdat);
 int io_getkey(void);
@@ -35,6 +34,7 @@ int devcards_knightoption(int player);
 void io_printgeneric(char *s);
 void pass_between_humans(int to);
 void devcards_newturn(void);
+int data_sleep(void);
 
 main()
 {
@@ -75,7 +75,7 @@ void pregame(int player, int res)
   ai_pregame(player);
   data_refresh(player);
   io_printmap(0);
-  sleep(1);
+  data_sleep();
   go = 0;
  }
  while(go) {
