@@ -6,14 +6,14 @@ int* get_intarray(int size);
 static int rolls[ROLLSLEN];
 static int *rollsp = rolls;
 
-static int turns = 0;
+static int numrolls = 0;
 
 //rollsp points to next empty slot
 void stats_roll(int roll)
 {
  *rollsp++ = roll;
  if(rollsp > rolls+ROLLSLEN) rollsp = rolls;
- turns++;
+ numrolls++;
 }
 
 int* stats_getlast5rolls(void)
@@ -29,7 +29,7 @@ int* stats_getlast5rolls(void)
  return ret;
 }
 
-int stats_numturns(void)
+int stats_numrolls(void)
 {
- return turns;
+ return numrolls;
 }

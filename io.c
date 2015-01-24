@@ -5,6 +5,7 @@
 
 void io_printdat(int printsdat);
 void io_printrolled(void);
+int stats_numrolls(void);
 
 int io_getkey()
 {
@@ -210,7 +211,7 @@ void io_printsetup(int cursor, int *set)
  mvprintw(y++, x, "#  %c  Player 3: %s                     #", (cursor == 2)? '*' : ' ', (set[2] == 0)? "human" : "ai   ");
  mvprintw(y++, x, "#  %c  Player 4: %s                     #", (cursor == 3)? '*' : ' ', (set[3] == 0)? "human" : "ai   ");
  mvprintw(y++, x, "#  %c  Map number distribution: %s  #", (cursor == 4)? '*' : ' ', (set[4] == 0)? "patterned" : "random   ");
- mvprintw(y++, x, "#  %c  Time between AI moves: %01.1f          #", (cursor == 5)? '*' : ' ', ((double)set[5])/10 );
+ mvprintw(y++, x, "#  %c  Time between AI moves: %01.1fs         #", (cursor == 5)? '*' : ' ', ((double)set[5])/10 );
  mvprintw(y++, x, "#                                         #");
  mvprintw(y++, x, "#    Use arrow keys to change settings    #");
  mvprintw(y++, x, "#        Press enter to begin game        #");
@@ -220,6 +221,7 @@ void io_printsetup(int cursor, int *set)
 void io_printrolled(void)
 {
  if(ROLLED) mvprintw(1, 0, "Rolled %d", ROLLED);
+ if(stats_numrolls()) mvprintw(2, 0, "Roll Count %d", stats_numrolls());
 }
 
 void io_printgeneric(char *s)

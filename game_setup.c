@@ -20,8 +20,9 @@ void change(int *set, int index, int c)
   else set[index] = 1;
  }
  else {
-  if(c == RIGHT) set[index]++;
-  else if(set[index] > 0) set[index]--;
+  if(c == RIGHT) {
+   if(set[index] < 99) set[index]++;
+  } else if(set[index] > 0) set[index]--;
  }
 }
 
@@ -31,7 +32,7 @@ int setup_routine()
  static int set[6];
  int i, c;
  for(i = 1; i < 4; i++) set[i] = 1;
- set[5] = 5;
+ set[5] = 10;
  int cursor = 0;
  while(go) {
   io_printsetup(cursor, set);
