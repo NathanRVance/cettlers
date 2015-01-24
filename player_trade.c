@@ -1,6 +1,6 @@
 #include "settlers.h"
 
-int ai_accepttrade(int *trade, int player);
+int ai_accepttrade(int *trade, int player, int playerTrading);
 void data_addresource(int p, int res, int num);
 int data_getresource(int p, int res);
 int data_isai(int p);
@@ -84,7 +84,7 @@ int* accepttrade(int *tr, int player, int playerTrading)
  int *ret = get_intarray(6);
  int i;
  if(data_isai(player)) {
-  if(ai_accepttrade(tr, player)) {
+  if(ai_accepttrade(tr, player, playerTrading)) {
    ret[5] = 1;
    for(i = 0; i < 5; i++) ret[i] = tr[i];
    return ret;

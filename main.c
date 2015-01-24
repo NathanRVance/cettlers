@@ -7,8 +7,8 @@ void io_printmap(int printsdat);
 int io_getkey(void);
 void io_init(void);
 void io_printhelp(void);
-void main_routine(void);
-void pregame_routine(void);
+void main_routine(int p);
+int pregame_routine(void);
 void map_setmessage(char s[]);
 void devcards_init(void);
 void data_init(void);
@@ -45,9 +45,9 @@ main()
  map_create(setup_routine());
  devcards_init();
  io_printmap(0);
- pregame_routine();
- roll(0);
- main_routine();
+ int p = pregame_routine();
+ roll(p);
+ main_routine(p);
 }
 
 void halt()
@@ -114,7 +114,7 @@ void pregame(int player, int res)
  if(res) data_pregameres(player, marker_getposition()); 
 }
 
-void pregame_routine()
+int pregame_routine()
 {
  marker_move(RIGHT);
  int c, player, p;
@@ -122,13 +122,14 @@ void pregame_routine()
  for(player = 0; player < 4; player++) pregame((player+p)%4, 0);
  for(player = 3; player >= 0; player--) pregame((player+p)%4, 1);
  map_setmessage("");
+ return p;
 }
 
-void main_routine()
+void main_routine(int p)
 {
  int c;
  int hascarded;
- int player = 0;
+ int player = p;
  while(1) {
   data_refresh(player);
   io_printmap(! data_isai(player));

@@ -19,6 +19,7 @@ int data_elementsremaining(int p, int item);
 int data_poslegal(int pos);
 int data_atvertex(int player, int position);
 int marker_getposition(void);
+char* itoa(int i);
 
 int builder_placesettlement(int pos, int player, int isPregame)
 {
@@ -62,6 +63,7 @@ int builder_placesettlement(int pos, int player, int isPregame)
    util_strreplace(map[map_getrowmapvert(pos)], "." VERTEX "*", cat(cat(VERTEX "*", color), "@" NRM), 1);
  }
  data_place(player, pos);
+ map_setmessage(cat(cat("Player ", itoa(player+1)), " built a settlement"));
  return 1;
 }
 
@@ -85,6 +87,7 @@ int builder_placecity(int pos, int player)
  util_strreplace(map[map_getrowmapvert(pos)], cat(cat(VERTEX "*", color), "@"), cat(cat(VERTEX "*", color), "#"), 1);
  util_strreplace(map[map_getrowmapvert(pos)], cat(cat("@" NRM, color), VERTEX "*"), cat(cat("#" NRM, color), VERTEX "*"), 1);
  data_upgrade(player, pos);
+ map_setmessage(cat(cat("Player ", itoa(player+1)), " built a city"));
  return 1;
 }
 

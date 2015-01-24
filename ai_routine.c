@@ -55,7 +55,6 @@ int ai_settle(int player)
   int vert = ai_cansettle(player);
   if(vert != 0) {
    marker_setposition(vert);
-   map_setmessage(cat(cat("Player ", itoa(player+1)), " built a settlement"));
    return builder_placesettlement(vert, player, 0);
   }
  }
@@ -84,7 +83,6 @@ int ai_city(int player)
  }
  marker_setposition(vert);
  builder_placecity(vert, player);
- map_setmessage(cat(cat("Player ", itoa(player+1)), " built a city"));
  return 1;
 }
 
@@ -129,44 +127,6 @@ int* ai_canroad(int player, int free)
  if(weight < 1 && ! free) return road;
  road[0] = maxi;
  road[1] = ai_roadfromvert(player, maxi)[0];
-
-/* int primaryweight = 0;
- //start with spaces within one road
- for(i = 1; i < 64; i++) {
-  if(! road_legalpos(player, i)) continue;
-  surrounding = ai_surroundingverts(i);
-  for(j = 0; j < 3; j++) {
-   if(road_freeedge(surrounding[j], i) && data_poslegal(surrounding[j])) {
-    if(weight < ai_vertweight(player, surrounding[j])) {
-     weight = ai_vertweight(player, surrounding[j]);
-     road[0] = i;
-     road[1] = surrounding[j];
-     primaryweight = 3; //arbitrary, this is the penalty against building two away
-    }
-   }
-  }
- }
- //look 2 roads away
- int *surrounding2, k;
- for(i = 1; i < 64; i++) {
-  if(! road_legalpos(player, i)) continue;
-  surrounding = ai_surroundingverts(i);
-  for(j = 0; j < 3; j++) {
-   if(road_freeedge(surrounding[j], i)) {
-    surrounding2 = ai_surroundingverts(surrounding[j]);
-    for(k = 0; k < 3; k++) {
-     if(road_freeedge(surrounding2[k], surrounding[j]) && data_poslegal(surrounding2[k])) {
-      if(weight + primaryweight < ai_vertweight(player, surrounding2[k])) {
-       weight = ai_vertweight(player, surrounding2[k]);
-       road[0] = i;
-       road[1] = surrounding[j];
-       primaryweight = 0;
-      }
-     }
-    }
-   }
-  }
- }*/
  return road;
 }
 
@@ -176,15 +136,6 @@ int ai_road(int player, int free)
  if(! road[0]) {
   return 0;
  }
-/* marker_setposition(road[0]);
- int dir;
- if(road[1] == road[0]-1) dir = 2; //left
- else if(road[1] == road[0]+1) dir = 3; //right
- else if(road[1] < road[0]) dir = 0; //up
- else if(road[1] > road[0]) dir = 1; //down
- int ret = road_prospect(player, dir);
- if(ret) road_build(player, free);
-*/
  road_vertbuild(player, road[0], road[1], free);
  if(! free) map_setmessage(cat(cat("Player ", itoa(player+1)), " built a road"));
 // if(! free) map_setmessage(cat(cat(cat(cat(cat("Player ", itoa(player+1)), " built a road from "), itoa(road[0])), " to "), itoa(road[1])));

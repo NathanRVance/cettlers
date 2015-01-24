@@ -43,9 +43,9 @@ int* gethand(int player)
  return hand;
 }
 
-int ai_accepttrade(int *trade, int player)
+int ai_accepttrade(int *trade, int player, int playerTrading)
 {
- if(data_vps(player) >= 7) return 0;
+ if(data_vps(playerTrading) >= 7) return 0;
  int *hand = gethand(player);
  int rating = rate_hand(hand, player);
  int i;

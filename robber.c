@@ -212,5 +212,6 @@ void robber_discard(int player)
     pass_between_humans(player);
    robber_discardhandler(player, data_totresources(player) / 2);
   }
+  player = (player+1)%4;
  }
 }

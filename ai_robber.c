@@ -38,7 +38,7 @@ void ai_discard(int player, int num)
   if(discarded == 0) {
    int *res = ai_rateres(player);
    int i, mini;
-   int INF = 100; //arbitrary
+   int INF = 100;
    while(num > 0) {
     mini = 0;
     for(i = 0; i < 5; i++) {

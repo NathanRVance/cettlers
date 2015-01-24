@@ -18,6 +18,7 @@ int data_elementsremaining(int p, int item);
 int* data_getroad(int player, int road);
 int* ai_surroundingverts(int vert);
 int data_isai(int player);
+char* itoa(int i);
 
 static int position;
 
@@ -87,6 +88,7 @@ int road_build(int player, int pregame)
   data_addresource(player, BRICK, -1);
  }
  data_road(player, marker_getposition(), position);
+ if(! pregame) map_setmessage(cat(cat("Player ", itoa(player+1)), " built a road"));
  return 1;
 }
 
