@@ -36,6 +36,7 @@ void pass_between_humans(int to);
 void devcards_newturn(void);
 int data_sleep(void);
 
+
 main()
 {
  ROLLED = 0;

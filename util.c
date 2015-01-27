@@ -108,11 +108,20 @@ char* itoa(int i)
  return &num[i];
 }
 
+int millasleep(int ms)
+{
+ struct timespec tim, tim2;
+ tim.tv_sec = ms/1000;
+ tim.tv_nsec = (ms%1000)*1000000L;
+ return nanosleep(&tim , &tim2);
+}
+
 //sleep in tenths of a second
 int bettersleep(int ds)
 {
- struct timespec tim, tim2;
- tim.tv_sec = ds/10;
- tim.tv_nsec = (ds%10)*100000000L;
- return nanosleep(&tim , &tim2);
+ return millasleep(ds*100);
+// struct timespec tim, tim2;
+// tim.tv_sec = ds/10;
+// tim.tv_nsec = (ds%10)*100000000L;
+// return nanosleep(&tim , &tim2);
 }

@@ -212,6 +212,7 @@ void io_printsetup(int cursor, int *set)
  mvprintw(y++, x, "#  %c  Player 4: %s                     #", (cursor == 3)? '*' : ' ', (set[3] == 0)? "human" : "ai   ");
  mvprintw(y++, x, "#  %c  Map number distribution: %s  #", (cursor == 4)? '*' : ' ', (set[4] == 0)? "patterned" : "random   ");
  mvprintw(y++, x, "#  %c  Time between AI moves: %01.1fs         #", (cursor == 5)? '*' : ' ', ((double)set[5])/10 );
+ mvprintw(y++, x, "#  %c  Animations: %s                #", (cursor == 6)? '*' : ' ', (set[6] == 0)? "disabled" : "enabled ");
  mvprintw(y++, x, "#                                         #");
  mvprintw(y++, x, "#    Use arrow keys to change settings    #");
  mvprintw(y++, x, "#        Press enter to begin game        #");
@@ -260,4 +261,12 @@ void io_printgeneric(char *s)
  }
  for(i = 0; i < maxLine+4; i++)
   mvprintw(y, x+i, "#");
+}
+
+void io_print(int x, int y, char* s, int color)
+{
+ attron(COLOR_PAIR(color));
+ mvprintw(y, x, "%s", s);
+ refresh();
+ attrset(A_NORMAL);
 }

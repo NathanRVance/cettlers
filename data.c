@@ -15,7 +15,7 @@ void io_printwin(int player, int cards);
 void halt(void);
 int* ai_surroundinghexes(int vert);
 void stats_roll(int roll);
-
+void animate(int resource, int hex, int player);
 
 //4 playes, 5 things to keep track of, 30 integers to keep track of each.
 static int player[4][5][30];
@@ -65,9 +65,10 @@ int data_getresource(int p, int res)
  return player[p][RESOURCES][res];
 }
 
-void data_addresource(int p, int res, int num)
+int data_addresource(int p, int res, int num)
 {
  player[p][RESOURCES][res] += num;
+ return num;
 }
 
 int data_totresources(int p)
@@ -232,11 +233,13 @@ void roll(int player)
   io_printmap(! data_isai(player));
   robber_routine(player);
  }
- int i, p;
+ int i, p, j;
  for(i = 1; i <= 21; i++)
   if(map_getdat(i, 1) == roll && map_getdat(i, 2) != 1) //is not robber
-   for(p = 0; p < 4; p++)
-    data_addresource(p, map_getdat(i, 0), data_onhex(p, i));
+   for(p = 0; p < 4; p++) {
+    int num = data_addresource(p, map_getdat(i, 0), data_onhex(p, i));
+    for(j = 0; j < num; j++) animate(map_getdat(i, 0), i, p);
+   }
 }
 
 //item: 1 is settlement, 2 is city, 3 is road
