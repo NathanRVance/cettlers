@@ -20,13 +20,17 @@
 #define IOP3   33
 #define IOP4   34
 
-static char* getcolor(int player)
-{
- switch(player) {
-  case 0: return P1;
-  case 1: return P2;
-  case 2: return P3;
-  case 3: return P4;
-  default: return "error";
- }
+static char* getcolor(int player) {
+	switch (player) {
+	case 0:
+		return P1;
+	case 1:
+		return P2;
+	case 2:
+		return P3;
+	case 3:
+		return P4;
+	default:
+		return "error";
+	}
 }
