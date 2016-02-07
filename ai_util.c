@@ -165,7 +165,7 @@ int* ai_roadfromvert(int player, int vert, int ret[2]) {
 			ret[0] = vert;
 			ret[1] = sur[i];
 			newroadlen = data_hypotheticalroadlength(player, ret, 1);
-			if (newroadlen >= 5 && newroadlen > nextlongest) {
+			if (newroadlen >= 5 && newroadlen > nextlongest && newroadlen > roadlen) {
 				weight += 5;
 			}
 			if (data_poslegal(sur[i]))

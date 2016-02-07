@@ -56,6 +56,14 @@ void io_init() {
 	}
 }
 
+static void turn_off_attributes() {
+	int i;
+	for(i = 31; i <= 38; i++)
+		attroff(COLOR_PAIR(i));
+	attroff(A_BLINK);
+	attroff(A_REVERSE);
+}
+
 static void print(int rows, int cols, char m[rows][cols]) {
 	int i, j, c, num;
 	for (i = 0; i < rows; i++, addch('\n')) {
@@ -71,7 +79,8 @@ static void print(int rows, int cols, char m[rows][cols]) {
 						while (m[i][++j] != 'm')
 							;
 					if (num == 0)
-						attrset(A_NORMAL);
+						//attrset(A_NORMAL);
+						turn_off_attributes();
 					else if (num == 5)
 						attron(A_BLINK | A_REVERSE);
 					else
@@ -81,7 +90,8 @@ static void print(int rows, int cols, char m[rows][cols]) {
 						attr_t at;
 						short pair;
 						attr_get(&at, &pair, NULL);
-						attrset(A_NORMAL);
+						//attrset(A_NORMAL);
+						turn_off_attributes();
 						addch('*');
 						attr_set(at, pair, NULL);
 					} else
