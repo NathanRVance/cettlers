@@ -125,6 +125,7 @@ void io_printhelp() {
 	mvprintw(y++, x, "#  t - trade             #");
 	mvprintw(y++, x, "#  c - access devel card #");
 	mvprintw(y++, x, "#      window            #");
+	mvprintw(y++, x, "#    - cancel trade      #");
 	mvprintw(y++, x, "#  p - pass turn         #");
 	mvprintw(y++, x, "#  q - exit              #");
 	mvprintw(y++, x, "#  h - display this      #");
@@ -135,22 +136,15 @@ void io_printhelp() {
 void io_printcards(int c, int s, int r, int m, int p, int v, int pos) {
 	int x = 0;
 	int y = 10;
-	mvprintw(y++, x,
-			"###########################################################");
-	mvprintw(y++, x,
-			"#  Buy   Soldier     Road    Monopoly   Year of   Victory #");
-	mvprintw(y++, x,
-			"# Card             Building             Plenty     Point  #");
-	mvprintw(y++, x,
-			"#  %2d      %2d        %2d         %2d        %2d        %2d    #",
-			c, s, r, m, p, v);
-	mvprintw(y++, x,
-			"#   %c       %c         %c          %c         %c         %c    #",
+	mvprintw(y++, x, "###########################################################");
+	mvprintw(y++, x, "#  Buy   Soldier     Road    Monopoly   Year of   Victory #");
+	mvprintw(y++, x, "# Card             Building             Plenty     Point  #");
+	mvprintw(y++, x, "#  %2d      %2d        %2d         %2d        %2d        %2d    #", c, s, r, m, p, v);
+	mvprintw(y++, x, "#   %c       %c         %c          %c         %c         %c    #",
 			(pos == 0) ? '*' : ' ', (pos == 1) ? '*' : ' ',
 			(pos == 2) ? '*' : ' ', (pos == 3) ? '*' : ' ',
 			(pos == 4) ? '*' : ' ', (pos == 5) ? '*' : ' ');
-	mvprintw(y++, x,
-			"###########################################################");
+	mvprintw(y++, x, "###########################################################");
 }
 
 void io_printtrade() {

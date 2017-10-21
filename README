@@ -1,17 +1,7 @@
 Cettlers
 
 This game is based on the board game Settlers of Catan. The user intface is entirely in ascii characters.
-Cettlers was written because linux has a lack of command line strategy games; Cettlers is intended to be the first in a line of popular board games for the linux/mac command line.
 
-To install,
-$ cd /directory/with/*.c/files/
-$ cd /Release/
+To compile,
+$ cd Release/
 $ make
-$ cp cettlers /directory/in/your/path/
-
-To run execute cettlers simply run
-$ cettlers
-
-Or, if you refuse to copy the executable into your path, run
-$ ./cettlers
-while in the directory containing the compiled binary file.
