@@ -1,56 +1,25 @@
 #include "settlers.h"
 
 void ai_discard(int player, int num) {
-	int discarded;
-	while (num > 0) {
-		discarded = 0;
-		if (num > 0 && data_getresource(player, STONE) > 3) {
-			num--;
-			discarded = 1;
-			data_addresource(player, STONE, -1);
-		}
-		if (num > 0 && data_getresource(player, WHEAT) > 2) {
-			num--;
-			discarded = 1;
-			data_addresource(player, WHEAT, -1);
-		}
-		if (num > 0 && data_getresource(player, SHEEP) > 1) {
-			num--;
-			discarded = 1;
-			data_addresource(player, SHEEP, -1);
-		}
-		if (num > 0 && data_getresource(player, WOOD) > 1) {
-			num--;
-			discarded = 1;
-			data_addresource(player, WOOD, -1);
-		}
-		if (num > 0 && data_getresource(player, BRICK) > 1) {
-			num--;
-			discarded = 1;
-			data_addresource(player, BRICK, -1);
-		}
-		if (discarded == 0) {
-			int *res = ai_rateres(player);
-			int i, mini;
-			int INF = 100;
-			while (num > 0) {
-				mini = 0;
-				for (i = 0; i < 5; i++) {
-					if (res[i] < res[mini]) {
-						mini = i;
-					}
-				}
-				if (data_getresource(player, mini) > num) {
-					data_addresource(player, mini, num * -1);
-					num = 0;
-				} else {
-					num -= data_getresource(player, mini);
-					data_addresource(player, mini,
-							data_getresource(player, mini) * -1);
-				}
-				res[mini] = INF;
+	int hand[5];
+	while(num > 0) {
+		gethand(player, hand);
+		int best = -100;
+		int bestdec = -1;
+		int res;
+		for(res = 0; res < 5; res++) {
+			if(hand[res] == 0)
+				continue;
+			hand[res]--;
+			int rating = rate_hand(hand, player);
+			if(rating > best) {
+				best = rating;
+				bestdec = res;
 			}
+			hand[res]++;
 		}
+		data_addresource(player, bestdec, -1);
+		num--;
 	}
 }
 
