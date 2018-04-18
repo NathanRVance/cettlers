@@ -7,9 +7,12 @@ void ai_discard(int player, int num) {
 		int best = -100;
 		int bestdec = -1;
 		int res;
-		for(res = 0; res < 5; res++) {
-			if(hand[res] == 0)
+		for (res = 0; res < 5; res++) {
+			if (hand[res] == 0)
 				continue;
+			if (bestdec == -1 && hand[res] > 0)
+				//Necessary so that it defaults to something in the worst case
+				bestdec = res;
 			hand[res]--;
 			int rating = rate_hand(hand, player);
 			if(rating > best) {
